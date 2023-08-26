@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faCartShopping
 } from "@fortawesome/free-solid-svg-icons";
+import UserLinks from './UserLinks';
 
 const NavBar = () => {
     const user = false;
@@ -35,10 +36,7 @@ const NavBar = () => {
                     <Image src="/phone.png" width={20} height={20} alt="" />
                     <span>3344-1221</span>
                 </div>
-                {!user ? (<Link href={"/login"}>Login</Link> 
-                ) : (
-                    <Link href={"/orders"}>Ordenes</Link>
-                )}
+                <UserLinks/>
                 <Link href={"/cart"}><FontAwesomeIcon icon={faCartShopping}/> Carrito(3)</Link>
             </div>
         </div>

@@ -19,7 +19,7 @@ const Featured = async () => {
   const featuredProducts:ProductType[] = await getData()
 
   return (
-    <div className="w-screen overflow-x-scroll text-blue-600">
+    <div className="w-full overflow-x-scroll text-blue-600">
       {/* WRAPPER */}
       <div className="w-max flex">
         {/* SINGLE ITEM */}
