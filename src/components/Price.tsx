@@ -1,42 +1,62 @@
 "use client";
 
+import { ProductType } from "@/types/types";
+import { useCartStore } from "@/utils/store";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-type Props = {
-    price: number;
-    id: number;
-    options?: { title: string; additionalPrice: number }[];
-};
-
-const Price = ({ price, id, options }: Props) => {
-    const [total, setTotal] = useState(price);
+const Price = ({ product }: { product: ProductType }) => {
+    const [total, setTotal] = useState(product.price);
     const [quantity, setQuantity] = useState(1);
     const [selected, setSelected] = useState(0);
 
+    const { addToCart } = useCartStore();
+
     useEffect(() => {
-        setTotal(
-            quantity * (options ? price + options[selected].additionalPrice : price)
-        );
-    }, [quantity, selected, options, price]);
+        useCartStore.persist.rehydrate()
+    }, [])
+
+    useEffect(() => {
+        if (product.options?.length) {
+            setTotal(
+                product.options[selected].additionalPrice
+            );
+        }
+    }, [quantity, selected, product]);
+
+    const handleCart = () => {
+        addToCart({
+            id: product.id,
+            title: product.title,
+            img: product.img,
+            price: (total*quantity),
+            ...(product.options?.length && {
+                optionTitle: product.options[selected].title,
+            }),
+            quantity: quantity,
+        })
+        toast.success("The product added to the cart!")
+    }
 
     return (
         <div className="flex flex-col gap-4">
-            <h2 className="text-2xl font-bold">${total.toFixed(2)}</h2>
+            <h2 className="text-2xl font-bold">${total}</h2>
             {/* OPTIONS CONTAINER */}
             <div className="flex gap-4">
-                {options?.map((option, index) => (
-                    <button
-                        key={option.title}
-                        className="min-w-[6rem] p-2 ring-1 ring-blue-400 rounded-md"
-                        style={{
-                            background: selected === index ? "rgb(113 113 248)" : "white",
-                            color: selected === index ? "white" : "blue",
-                        }}
-                        onClick={() => setSelected(index)}
-                    >
-                        {option.title}
-                    </button>
-                ))}
+                {product.options?.length &&
+                    product.options?.map((option, index) => (
+                        <button
+                            key={option.title}
+                            className="min-w-[6rem] p-2 ring-1 ring-blue-400 rounded-md"
+                            style={{
+                                background: selected === index ? "rgb(113 113 248)" : "white",
+                                color: selected === index ? "white" : "blue",
+                            }}
+                            onClick={() => setSelected(index)}
+                        >
+                            {option.title}
+                        </button>
+                    ))}
             </div>
             {/* QUANTITY AND ADD BUTTON CONTAINER */}
             <div className="flex justify-between items-center">
@@ -58,7 +78,10 @@ const Price = ({ price, id, options }: Props) => {
                     </div>
                 </div>
                 {/* CART BUTTON */}
-                <button className="uppercase w-56 bg-blue-600 text-white p-3 ring-1 ring-blue-600">
+                <button
+                    className="uppercase w-56 bg-blue-600 text-white p-3 ring-1 ring-blue-600"
+                    onClick={handleCart}
+                >
                     Add to Cart
                 </button>
             </div>

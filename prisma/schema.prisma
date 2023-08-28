@@ -79,7 +79,19 @@ model Product {
   options    Json[]
   category   Category @relation(fields: [catSlug], references: [slug])
   catSlug    String
+  // sizes      ProductSizes[]
 }
+
+// model ProductSizes {
+//   id        String   @id @default(cuid())
+//   createdAt DateTime @default(now())
+//   title     String
+//   desc      String
+//   price     Decimal
+//   ingridients   Json[]
+//   product  Product @relation(fields: [productId], references: [id])
+//   productId   String
+// }
 
 model Order {
   id        String   @id @default(cuid())

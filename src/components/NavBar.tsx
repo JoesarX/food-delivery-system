@@ -8,6 +8,7 @@ import {
     faCartShopping
 } from "@fortawesome/free-solid-svg-icons";
 import UserLinks from './UserLinks';
+import CartIcon from './CartIcon';
 
 const NavBar = () => {
     const user = false;
@@ -32,12 +33,13 @@ const NavBar = () => {
             </div>
             {/* RIGHT LINKS */}
             <div className='hidden md:flex gap-4 items-center justify-end flex-1'>
-                <div className='md:absolute top-3 r-2 lg:static flex items-center gap-2 cursor-pointer bg-blue-200 px-1 rounded-md'>
+                <div className='md:absolute top-3 r-2 2xl:static flex items-center gap-2 cursor-pointer bg-blue-200 px-1 rounded-md'>
                     <Image src="/phone.png" width={20} height={20} alt="" />
                     <span>3344-1221</span>
                 </div>
                 <UserLinks/>
-                <Link href={"/cart"}><FontAwesomeIcon icon={faCartShopping}/> Carrito(3)</Link>
+                {/* <Link href={"/cart"}><FontAwesomeIcon icon={faCartShopping}/> Carrito(3)</Link> */}
+                <CartIcon/>
             </div>
         </div>
     )

@@ -45,7 +45,7 @@ const OrdersPage = () => {
         const form = e.target as HTMLFormElement;
         const input = form.elements[0] as HTMLInputElement;
         const status = input.value;
-
+        console.log(status);
         mutation.mutate({ id, status });
         toast.success("The order status has been changed!")
     };
