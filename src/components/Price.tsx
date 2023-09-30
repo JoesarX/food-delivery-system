@@ -89,4 +89,4 @@ const Price = ({ product }: { product: ProductType }) => {
     );
 };
 
-export default Price;
+export default Price; 
