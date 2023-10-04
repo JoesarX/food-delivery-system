@@ -3,7 +3,8 @@ import Image from "next/image";
 import React from "react";
 
 const getData = async ()=>{
-  const res = await fetch("http://localhost:3000/api/products",{
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${apiUrl}/products/featured`,{
     cache:"no-store"
   })
 

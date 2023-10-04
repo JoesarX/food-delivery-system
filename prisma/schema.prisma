@@ -76,6 +76,7 @@ model Product {
   img        String?
   price      Decimal
   isFeatured Boolean  @default(false)
+  isVisible Boolean  @default(true)
   options    Json[]
   category   Category @relation(fields: [catSlug], references: [slug])
   catSlug    String

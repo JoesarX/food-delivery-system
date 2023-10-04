@@ -3,10 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+
+//!DEPRECATED: this old version worked bringing products by category, but now we are bringing all products 
+//! Left in the meantime to show how to fetch data from the API and filter it by category
+
 const getData = async(category:string) => {
-  const res = await fetch(`http://localhost:3000/api/products?cat=${category}`,{
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${apiUrl}/products?cat=${category}`,{
   cache:"no-store"
   })
+  
   if(!res.ok){
       throw new Error("Failed to fetch data at menu page")
   }
