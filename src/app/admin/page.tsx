@@ -16,7 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 
-const AdminHome = ({ id }: { id: string }) => {
+const AdminHome = () => {
     //* Variables
     const { data: session, status } = useSession();
     const router = useRouter();
