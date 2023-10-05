@@ -28,7 +28,7 @@ const AdminHome = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch(`${apiUrl}/products`, {
+                const res = await fetch(`${apiUrl}/products/adminView`, {
                     cache: "no-store"
                 });
                 if (!res.ok) {
@@ -64,21 +64,26 @@ const AdminHome = () => {
     //* PUT Visibility and Featured
     const handleUpdateVisOrFeat = async (id: string, action: string, state: boolean) => {
         console.log(`${apiUrl}/products/${id}`);
-        //depending on whether we want to change the visibility or featured state, we will send a different body
         const body = action === "visibility" ? { isVisible: state } : { isFeatured: state };
-        console.log("body")
-        console.log(body)
-        console.log("url")
         console.log(`${apiUrl}/products/${id}`)
         const res = await fetch(`${apiUrl}/products/${id}`, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
+            body: JSON.stringify({
+                ...body,
+            }),
         });
+
+        const data2 = await res.json();
         if (res.ok) {
-            toast.success("Producto cambiado con exito.")
+            if (action === "visibility" && state === true) {
+                toast.success("Producto hecho visible con exito.");
+            } else if (action === "visibility" && state === false) {
+                toast.success("Producto hecho invisible con exito.");
+            } else if (action === "featured" && state === true) {
+                toast.success("Producto hecho destacado con exito.");
+            } else if (action === "featured" && state === false) {
+                toast.success("Producto quitado de destacados con exito.");
+            }
             setIsProductsChanging(true);
         } else {
             const errorData = await res.json();
@@ -89,48 +94,44 @@ const AdminHome = () => {
     }
 
     const handleUpdateVisOrFeatModal = async (id: string, action: string, state: boolean) => {
-        Swal.fire({
-            title: 'Esta seguro que quiere cambiar el producto?',
-            text: "Una vez borrado, no se podra recuperar!",
+        let titleText = "";
+        let textText = "";
+        if(action === "visibility" && state === false){
+            titleText = "Esta seguro que quiere hacer el producto invisible?";
+            textText = "Al hacerlo invisible, sus clientes no podran ver ni comprar el producto, pero la informacion del producto se mantendra y podra hacerlo visible en cualquier momento.";
+        }else if(action === "visibility" && state === true){
+            titleText = "Esta seguro que quiere hacer el producto visible?";
+            textText = "Al hacerlo visible, sus clientes podran ver y comprar el producto.";
+        }else if(action === "featured" && state === false){
+            titleText = "Esta seguro que quiere quitar el producto de destacados?";
+            textText = "Al quitarlo de destacados, sus clientes no podran ver el producto en la pagina principal, pero siempre podran acceder a el desde el menu.";
+        }else if(action === "featured" && state === true){
+            titleText = "Esta seguro que quiere hacer el producto destacado?";
+            textText = "Al hacerlo destacado, sus clientes podran ver el producto en la pagina principal.";
+        }
+
+        Swal
+        .fire({
+            title: titleText,
+            text: textText,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#ababab',
             reverseButtons: true,
             cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Elminiar'
+            confirmButtonText: 'Cambiar'
         }).then((result) => {
             if (result.isConfirmed) {
-                updateProductVisibility(id, state);
+                handleUpdateVisOrFeat(id, action ,state);
             }
         })
     }
-
-    const updateProductVisibility = async (id: string, isVisible: boolean) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const res = await fetch(`${apiUrl}/products/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ isVisible }),
-        });
-
-        if (res.ok) {
-            toast.success("Product visibility updated successfully.");
-            // You can also update your UI or state as needed here.
-        } else {
-            const data = await res.json();
-            toast.error("Failed to update product visibility.");
-            toast.error(data.message);
-        }
-    };
 
 
     //* Delete Product
     const handleProductDelete = async (id: string) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        console.log(`${apiUrl}/products/${id}`);
         const res = await fetch(`${apiUrl}/products/${id}`, { method: "DELETE" })
         if (res.ok) {
             toast.success("Producto eleminado con exito.")
@@ -173,7 +174,7 @@ const AdminHome = () => {
                 {featuredProducts.map((item) => (
                     <div
                         key={item.id}
-                        className="w-80 h-100 p-4 m-2 bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+                        className="w-80 h-100 p-4 m-2 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
                     >
                         {/* IMAGE CONTAINER */}
                         {item.img && (
@@ -192,7 +193,7 @@ const AdminHome = () => {
                             <h1 className="text-xl font-bold uppercase xl:text-2xl 2xl:text-3xl">
                                 {item.title}
                             </h1>
-                            <p className="py-2">{item.desc}</p>
+                            <p className="py-1.5 overflow-hidden line-clamp-2">{item.desc}</p>
                             <span className="flex flex-row justify-start overflow-x-scroll w-full">
                                 {item.options?.length ? (
                                     item.options.map((option, index) => (
@@ -213,22 +214,22 @@ const AdminHome = () => {
                         <div className="flex justify-end mt-2">
                             {item.isVisible ? (
                                 <span>
-                                    <button className="bg-gray-600 text-white p-2 rounded-md mr-2 w-9" onClick={() => handleUpdateVisOrFeatModal(item.id, "visibility", !item.isVisible)} title='Hacer Producto Invisible'>
-                                        <FontAwesomeIcon icon={faEyeSlash} />
-                                    </button>
                                     {item.isFeatured ? (
-                                        <button className="bg-slate-800 text-white p-2 rounded-md mr-2 w-9" title='Quitar Producto de Destacados'>
+                                        <button className="bg-slate-800 text-white p-2 rounded-md mr-2 w-9"  onClick={() => handleUpdateVisOrFeatModal(item.id, "featured", !item.isFeatured)} title='Quitar Producto de Destacados'>
                                             <FontAwesomeIcon icon={faMoon} />
                                         </button>
                                     ) : (
-                                        <button className="bg-yellow-500 text-white p-2 rounded-md mr-2 w-9" title='Hacer Producto Destacado'>
+                                        <button className="bg-yellow-500 text-white p-2 rounded-md mr-2 w-9"  onClick={() => handleUpdateVisOrFeatModal(item.id, "featured", !item.isFeatured)} title='Hacer Producto Destacado'>
                                             <FontAwesomeIcon icon={faStar} />
                                         </button>
 
                                     )}
+                                    <button className="bg-gray-600 text-white p-2 rounded-md mr-2 w-9" onClick={() => handleUpdateVisOrFeatModal(item.id, "visibility", !item.isVisible)} title='Hacer Producto Invisible'>
+                                        <FontAwesomeIcon icon={faEyeSlash} />
+                                    </button>
                                 </span>
                             ) : (
-                                <button className="bg-gray-500 text-white p-2 rounded-md mr-2 w-9" title='Hacer Producto Visible'>
+                                <button className="bg-gray-500 text-white p-2 rounded-md mr-2 w-9"  onClick={() => handleUpdateVisOrFeatModal(item.id, "visibility", !item.isVisible)} title='Hacer Producto Visible'>
                                     <FontAwesomeIcon icon={faEye} />
                                 </button>
                             )}

@@ -38,6 +38,7 @@ export default function RootLayout({
             <div>
               <NavBar />
               {children}
+              <Footer />
               <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
             </div>
             </QueryProvider>

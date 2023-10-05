@@ -9,46 +9,17 @@ export const GET = async (
     { params }: { params: { id: string } }
 ) => {
     const { id } = params;
-    console.log("API BODY")
-
-    try {
-        const product = await prisma.product.findUnique({
-            where: {
-                id: id,
-            },
-        });
-
-        return new NextResponse(JSON.stringify(product), { status: 200 });
-    } catch (err) {
-        console.log(err);
-        return new NextResponse(
-            JSON.stringify({ message: "Something went wrong!" }),
-            { status: 500 }
-        );
-    }
-};
-
-// PUT/UPDATE SINGLE PRODUCT
-export const PUT = async (
-    req: NextRequest,
-    { params, body }: { params: { id: string }; body: ProductType }
-) => {
-    const { id } = params;
     const session = await getAuthSession();
 
     if (session?.user.isAdmin) {
         try {
-            // Update the product with the new data
-            const updatedProduct = await prisma.product.update({
+            const product = await prisma.product.findUnique({
                 where: {
                     id: id,
                 },
-                data: body,
             });
 
-            return new NextResponse(JSON.stringify(updatedProduct), {
-                status: 200,
-            });
+            return new NextResponse(JSON.stringify(product), { status: 200 });
         } catch (err) {
             console.log(err);
             return new NextResponse(
@@ -57,9 +28,49 @@ export const PUT = async (
             );
         }
     }
-    return new NextResponse(JSON.stringify({ message: "You are not allowed!" }), {
-        status: 403,
-    });
+
+    return new NextResponse(
+        JSON.stringify({ message: 'You are not allowed!' }),
+        { status: 403 }
+    );
+
+};
+
+// PUT/UPDATE SINGLE PRODUCT
+export const PUT = async (
+    req: NextRequest,
+    { params }: { params: { id: string } }
+) => {
+    const { id } = params;
+    const session = await getAuthSession();
+
+    if (session?.user.isAdmin) {
+        try {
+            const body = await req.json(); // Get the updated data from the request body
+
+            // Update the product with the given ID
+            const updatedProduct = await prisma.product.update({
+                where: { id },
+                data: { ...body }, // Update fields as needed
+            });
+
+            return new NextResponse(
+                JSON.stringify(updatedProduct),
+                { status: 200 }
+            );
+        } catch (err) {
+            console.error(err);
+            return new NextResponse(
+                JSON.stringify({ message: 'Something went wrong!' }),
+                { status: 500 }
+            );
+        }
+    }
+
+    return new NextResponse(
+        JSON.stringify({ message: 'You are not allowed!' }),
+        { status: 403 }
+    );
 };
 
 
