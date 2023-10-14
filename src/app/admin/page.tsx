@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faPenToSquare, faTrash, faEye, faEyeSlash, faStar, faMoon
 } from "@fortawesome/free-solid-svg-icons";
-
+import { MdOutlineAddCircle } from 'react-icons/md';
 
 const AdminHome = () => {
     //* Variables
@@ -56,9 +56,14 @@ const AdminHome = () => {
         return redirect("/");
     }
 
-    //* Redirect Functions
+    //* Add Product Redirect
     const handleAddProductRedirect = () => {
         router.push("/admin/add-product");
+    };
+
+    //* Edit Product Redirect
+    const handleEditProductRedirect = (id:string) => {
+        router.push(`/admin/edit-product/${id}`);
     };
 
     //* PUT Visibility and Featured
@@ -96,36 +101,36 @@ const AdminHome = () => {
     const handleUpdateVisOrFeatModal = async (id: string, action: string, state: boolean) => {
         let titleText = "";
         let textText = "";
-        if(action === "visibility" && state === false){
+        if (action === "visibility" && state === false) {
             titleText = "Esta seguro que quiere hacer el producto invisible?";
             textText = "Al hacerlo invisible, sus clientes no podran ver ni comprar el producto, pero la informacion del producto se mantendra y podra hacerlo visible en cualquier momento.";
-        }else if(action === "visibility" && state === true){
+        } else if (action === "visibility" && state === true) {
             titleText = "Esta seguro que quiere hacer el producto visible?";
             textText = "Al hacerlo visible, sus clientes podran ver y comprar el producto.";
-        }else if(action === "featured" && state === false){
+        } else if (action === "featured" && state === false) {
             titleText = "Esta seguro que quiere quitar el producto de destacados?";
             textText = "Al quitarlo de destacados, sus clientes no podran ver el producto en la pagina principal, pero siempre podran acceder a el desde el menu.";
-        }else if(action === "featured" && state === true){
+        } else if (action === "featured" && state === true) {
             titleText = "Esta seguro que quiere hacer el producto destacado?";
             textText = "Al hacerlo destacado, sus clientes podran ver el producto en la pagina principal.";
         }
 
         Swal
-        .fire({
-            title: titleText,
-            text: textText,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#ababab',
-            reverseButtons: true,
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Cambiar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                handleUpdateVisOrFeat(id, action ,state);
-            }
-        })
+            .fire({
+                title: titleText,
+                text: textText,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#ababab',
+                reverseButtons: true,
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Cambiar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    handleUpdateVisOrFeat(id, action, state);
+                }
+            })
     }
 
 
@@ -165,10 +170,12 @@ const AdminHome = () => {
     return (
         <div className="w-full overflow-y-scroll  text-blue-600">
             {/* PRODUCT TABLE */}
-            <button className="bg-gray-600 text-white p-2 rounded-md mr-2 w-30 inline-flex " onClick={handleAddProductRedirect} title='Hacer Producto Invisible'>
-                <FontAwesomeIcon icon={faEyeSlash} className="m-1" />
-                <h1>Agregar Producto</h1>
-            </button>
+            <div className="flex justify-end">
+                <button className="bg-blue-800 text-white p-2 rounded-md w-30 inline-flex items-center justify-center m-3 mx-6" onClick={handleAddProductRedirect} title='Hacer Producto Invisible'>
+                    <h1>Agregar Producto</h1>
+                    <MdOutlineAddCircle className="ml-1" style={{ fontSize: '24px' }}/> {/* Adjust margin as needed */}
+                </button>
+            </div>  
             <div className="flex flex-row flex-wrap justify-around ">
                 {/* SINGLE ITEM */}
                 {featuredProducts.map((item) => (
@@ -215,11 +222,11 @@ const AdminHome = () => {
                             {item.isVisible ? (
                                 <span>
                                     {item.isFeatured ? (
-                                        <button className="bg-slate-800 text-white p-2 rounded-md mr-2 w-9"  onClick={() => handleUpdateVisOrFeatModal(item.id, "featured", !item.isFeatured)} title='Quitar Producto de Destacados'>
+                                        <button className="bg-slate-800 text-white p-2 rounded-md mr-2 w-9" onClick={() => handleUpdateVisOrFeatModal(item.id, "featured", !item.isFeatured)} title='Quitar Producto de Destacados'>
                                             <FontAwesomeIcon icon={faMoon} />
                                         </button>
                                     ) : (
-                                        <button className="bg-yellow-500 text-white p-2 rounded-md mr-2 w-9"  onClick={() => handleUpdateVisOrFeatModal(item.id, "featured", !item.isFeatured)} title='Hacer Producto Destacado'>
+                                        <button className="bg-yellow-500 text-white p-2 rounded-md mr-2 w-9" onClick={() => handleUpdateVisOrFeatModal(item.id, "featured", !item.isFeatured)} title='Hacer Producto Destacado'>
                                             <FontAwesomeIcon icon={faStar} />
                                         </button>
 
@@ -229,13 +236,13 @@ const AdminHome = () => {
                                     </button>
                                 </span>
                             ) : (
-                                <button className="bg-gray-500 text-white p-2 rounded-md mr-2 w-9"  onClick={() => handleUpdateVisOrFeatModal(item.id, "visibility", !item.isVisible)} title='Hacer Producto Visible'>
+                                <button className="bg-gray-500 text-white p-2 rounded-md mr-2 w-9" onClick={() => handleUpdateVisOrFeatModal(item.id, "visibility", !item.isVisible)} title='Hacer Producto Visible'>
                                     <FontAwesomeIcon icon={faEye} />
                                 </button>
                             )}
 
 
-                            <button className="bg-blue-600 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto'>
+                            <button className="bg-blue-600 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto'  onClick={() => handleEditProductRedirect(item.id)}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </button>
                             <button className="bg-red-600 text-white p-2 rounded-md w-9" title='Eliminar Producto' onClick={() => handleProductDeleteModal(item.id)}>

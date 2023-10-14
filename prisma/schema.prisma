@@ -74,7 +74,7 @@ model Product {
   title      String
   desc       String
   img        String?
-  price      Decimal
+  price      Decimal 
   isFeatured Boolean  @default(false)
   isVisible Boolean  @default(true)
   options    Json[]

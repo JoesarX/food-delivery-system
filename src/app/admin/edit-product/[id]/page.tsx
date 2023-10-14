@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import test from "node:test";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { ProductType } from "@/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faPlus
@@ -13,10 +14,9 @@ import {
 
 
 type Inputs = {
-    title: string;
-    desc: string;
-    price: number;
-    catSlug: string;
+    title: string | undefined;
+    desc: string | undefined;
+    price: number | undefined;
 };
 
 type Category = {
@@ -30,16 +30,19 @@ type Option = {
     additionalPrice: number;
 };
 
-const AddProductPage = () => {
+const EditProductPage = ({ params }: { params: { id: string } }) => {
     const { data: session, status } = useSession();
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+    const id = params.id;
+
     const [inputs, setInputs] = useState<Inputs>({
-        title: "",
-        desc: "",
-        price: 0,
-        catSlug: "",
+        title: undefined,
+        desc: undefined,
+        price: undefined,
     });
+
+    const [selectedCategory, setSelectedCategory] = useState<string>("");
 
     const [option, setOption] = useState<Option>({
         title: "",
@@ -48,6 +51,7 @@ const AddProductPage = () => {
 
     const [options, setOptions] = useState<Option[]>([]);
     const [file, setFile] = useState<File>();
+
     const [categories, setCategories] = useState<Category[]>([]);
 
     const router = useRouter();
@@ -55,6 +59,8 @@ const AddProductPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                console.log("fetching")
+                // Fetch categories
                 const res = await fetch(`${apiUrl}/categories/nameAndSlug`, {
                     cache: "no-store"
                 });
@@ -63,6 +69,27 @@ const AddProductPage = () => {
                 }
                 const data: Category[] = await res.json();
                 setCategories(data);
+
+                // Fetch product details by ID
+                const productRes = await fetch(`${apiUrl}/products/${id}`, {
+                    cache: "no-store"
+                });
+                if (!productRes.ok) {
+                    throw new Error("Failed to fetch product");
+                }
+                const productData: ProductType = await productRes.json();
+
+                // Populate the inputs state with product details
+                setInputs({
+                    title: productData.title,
+                    desc: productData.desc,
+                    price: productData.price,
+                });
+
+                setSelectedCategory(productData.catSlug)
+
+                // Populate the options state with product options
+                setOptions(productData.options || []);
             } catch (error) {
                 console.error(error);
                 toast.error("Hubo un error al cargar las categorias, porfavor intente de nuevo.");
@@ -70,7 +97,7 @@ const AddProductPage = () => {
             }
         };
         fetchData();
-    }, [categories, apiUrl]);
+    }, [ id, apiUrl]);
 
 
     if (status === "loading") {
@@ -88,10 +115,9 @@ const AddProductPage = () => {
     };
 
     const handleCategorySelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setInputs((prev) => {
-            return { ...prev, [e.target.name]: e.target.value };
-        });
+        setSelectedCategory(e.target.value);
     };
+    
 
     // Function to check for duplicate option names
     const isValidOption = (title: string, additionalPrice: number) => {
@@ -134,7 +160,8 @@ const AddProductPage = () => {
     //*Validation
     const validate = () => {
         console.log(inputs);
-        if (inputs.title === "") {
+
+        if (inputs.title === "" || inputs.title === undefined) {
             toast.error("Se requiere un Titulo.");
             return false;
         } else if (inputs.title.length < 3) {
@@ -144,7 +171,7 @@ const AddProductPage = () => {
             toast.warning("Le recomendamos que el Titulo sea mas corto.");
             return false;
         }
-        if (inputs.desc === "") {
+        if (inputs.desc === "" || inputs.desc === undefined) {
             toast.error("Se requiere una Descripcion.");
             return false;
         } else if (inputs.desc.length < 10) {
@@ -155,11 +182,11 @@ const AddProductPage = () => {
             return false;
         }
         const decimalRegex = /^\d*\.?\d*$/;
-        if (!decimalRegex.test(inputs.price.toString())) {
+        if (inputs.price !== undefined && !decimalRegex.test(inputs.price.toString())) {
             toast.error("El precio debe ser un numero.");
             return false;
         } else if (options.length === 0) {
-            if (inputs.price === 0 || inputs.price < 0 || inputs.price === null || inputs.price === undefined || inputs.price.toString() === '') {
+            if (inputs.price === undefined || inputs.price === 0 || inputs.price < 0 || inputs.price === undefined || inputs.price.toString() === '') {
                 toast.error("Se requiere un Precio.");
                 return false;
             } else if (inputs.price > 200) {
@@ -171,7 +198,7 @@ const AddProductPage = () => {
             }
         }
 
-        if (inputs.catSlug === "" || inputs.catSlug === undefined || inputs.catSlug === null) {
+        if (selectedCategory=== "" || selectedCategory=== undefined || selectedCategory=== undefined) {
             toast.error("Se requiere una categoria.");
             return false;
         }
@@ -203,24 +230,25 @@ const AddProductPage = () => {
         return resData.url;
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmitEdit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validate()) return;
         try {
-            
+
             //const url = await upload();
 
             //change the price in case of empty and having options just so its not 0
             if (options.length > 0) {
-                if (inputs.price === 0 || inputs.price < 0 || inputs.price === null || inputs.price === undefined || inputs.price.toString() === '') {
+                if (inputs.price === undefined || inputs.price === 0 || inputs.price < 0 || inputs.price === null ||inputs.price === undefined || inputs.price.toString() === '') {
                     inputs.price = 99;
                 }
             }
-            const res = await fetch(`${apiUrl}/products/adminView`, {
-                method: "POST",
+            const res = await fetch(`${apiUrl}/products/${id}`, {
+                method: "PUT",
                 body: JSON.stringify({
                     img: '/temporary/p2.png',
                     ...inputs,
+                    catSlug: selectedCategory,
                     options,
                 }),
             });
@@ -238,9 +266,9 @@ const AddProductPage = () => {
 
     return (
         <div className="p-4 sm:px-10 md:px-20 lg:px-40 xl:px-60 flex items-center justify-center text-blue-800">
-            <form onSubmit={handleSubmit} className="flex flex-wrap gap-6 ">
+            <form onSubmit={handleSubmitEdit} className="flex flex-wrap gap-6 ">
                 <h1 className="text-4xl mb-2 text-indigo-900 font-bold">
-                    Agregar Nuevo Producto
+                    Editar Producto
                 </h1>
                 {/* <div className="w-full flex flex-col gap-2 ">
                     <label
@@ -265,6 +293,7 @@ const AddProductPage = () => {
                         placeholder="Orden de Pastelitos"
                         name="title"
                         onChange={handleChange}
+                        defaultValue={inputs.title}
                     />
                 </div>
                 <div className="w-full flex flex-col gap-2">
@@ -276,6 +305,7 @@ const AddProductPage = () => {
                                 rellenos de carne molida con papa o arroz y acompañados con repollo, salsa y queso.'
                         name="desc"
                         onChange={handleChange}
+                        defaultValue={inputs.desc}
                     />
                 </div>
                 <div className="w-full flex flex-col gap-2 ">
@@ -287,6 +317,7 @@ const AddProductPage = () => {
                         placeholder="29"
                         name="price"
                         onChange={handleChange}
+                        defaultValue={inputs.price}
                     //disabled={options.length > 0}
                     />
                     {options.length > 0 && (
@@ -302,6 +333,7 @@ const AddProductPage = () => {
                         className="ring-1 ring-blue-700 p-4 rounded-sm outline-none bg-gray-50"
                         name="catSlug"
                         onChange={handleCategorySelectChange}
+                        value={selectedCategory}
                     >
                         <option value="">Seleccione una Categoria de Producto</option>
                         {categories.map((category) => (
@@ -363,7 +395,7 @@ const AddProductPage = () => {
                         type="submit"
                         className="bg-blue-600 p-4 text-white rounded-md w-48 text-lg font-bold"
                     >
-                        Crear Producto
+                        Editar Producto
                     </button>
                 </div>
 
@@ -372,4 +404,4 @@ const AddProductPage = () => {
     );
 };
 
-export default AddProductPage;
+export default EditProductPage;

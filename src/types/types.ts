@@ -10,11 +10,12 @@ export type MenuType = {
 export type ProductType = {
     id: string;
     title: string;
-    desc?: string;
+    desc: string;
     img?: string;
     price: number;
     isFeatured: boolean;
     isVisible: boolean;
+    catSlug: string;
     options?: { title: string; additionalPrice: number }[];
 };
 
