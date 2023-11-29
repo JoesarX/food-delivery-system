@@ -9,10 +9,10 @@ export const GET = async (req: NextRequest) => {
     if (session) {
         try {
             if (session.user.isAdmin) {
-                const orders = await prisma.order.findMany();
+                const orders = await prisma.orders.findMany();
                 return new NextResponse(JSON.stringify(orders), { status: 200 });
             }
-            const orders = await prisma.order.findMany({
+            const orders = await prisma.orders.findMany({
                 where: {
                     userEmail : session.user.email! as string,
                 },
@@ -40,10 +40,10 @@ export const POST = async (req: NextRequest) => {
     if (session) {
         try {
             const body = await req.json();
-            const order = await prisma.order.create({
+            const orders = await prisma.orders.create({
                 data: body,
             });
-            return new NextResponse(JSON.stringify(order), { status: 201 });
+            return new NextResponse(JSON.stringify(orders), { status: 201 });
         } catch (err) {
             console.log(err);
             return new NextResponse(

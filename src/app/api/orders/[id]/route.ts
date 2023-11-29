@@ -12,7 +12,7 @@ export const PUT = async (
     try {
         const body = await req.json();
 
-        await prisma.order.update({
+        await prisma.orders.update({
             where: {
                 id: id,
             },
