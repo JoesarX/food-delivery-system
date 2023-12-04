@@ -8,11 +8,14 @@ export type MenuType = {
 }[];
 
 export type ProductType = {
-    id: string;
+    id: number;
     title: string;
-    desc?: string;
+    desc: string;
     img?: string;
     price: number;
+    isFeatured: boolean;
+    isVisible: boolean;
+    catSlug: string;
     options?: { title: string; additionalPrice: number }[];
 };
 
@@ -27,7 +30,7 @@ export type OrderType = {
 };
 
 export type CartItemType = {
-    id: string;
+    id: number;
     title: string;
     img?: string;
     price: number;
@@ -44,4 +47,5 @@ export type CartType = {
 export type ActionTypes = {
     addToCart: (item: CartItemType) => void;
     removeFromCart: (item: CartItemType) => void;
+    clearCart: () => void;
 }

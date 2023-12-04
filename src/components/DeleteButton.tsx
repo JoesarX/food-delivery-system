@@ -10,8 +10,10 @@ import {
 import { use } from "react";
 import { toast } from "react-toastify";
 
+//! DEPRECATED DELETE BUTTON
+//! It was replaced by the DeleteButton component in the admin folder
 
-const DeleteButton = ({id}: {id: string}) => {
+const DeleteButton = ({id}: {id: number}) => {
     const {data:session,status} = useSession();
     const router = useRouter();
     
@@ -24,7 +26,8 @@ const DeleteButton = ({id}: {id: string}) => {
     }
 
     const handleDeleteProduct = async() => {
-        const res = await fetch(`http://localhost:3000/api/products/${id}`,{method:"DELETE"})
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}products/${id}`,{method:"DELETE"})
         if(res.ok){
             router.push("/menu")
             toast.success("Product deleted successfully")

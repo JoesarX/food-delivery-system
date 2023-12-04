@@ -4,9 +4,12 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import { toast } from "react-toastify";
+
+import ordersService from '@/services/ordersService';
 
 const CartPage = () => {
-    const { products, totalItems, totalPrice, removeFromCart } = useCartStore();
+    const { products, totalItems, totalPrice, removeFromCart, clearCart } = useCartStore();
     const { data: session } = useSession();
     const router = useRouter();
 
@@ -15,27 +18,35 @@ const CartPage = () => {
     }, []);
 
     const handleCheckout = async () => {
-        if (!session) {
-            router.push("/login");
-        } else {
-            try {
-                const res = await fetch("http://localhost:3000/api/orders", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        price: totalPrice,
-                        products,
-                        status: "Not Paid!",
-                        userEmail: session.user.email,
-                    }),
-                });
-                const data = await res.json()
-                router.push(`/pay/${data.id}`)
-            } catch (err) {
-                console.log(err);
-            }
+    if (!session) {
+        router.push("/login");
+    } else {
+        if (totalItems === 0 && totalPrice === 0) {
+            toast.error("No puede proceder a ordenar si no tiene productos en el carrito.");
+            return;
         }
-    };
+        try {
+            const body = {
+                price: totalPrice,
+                products,
+                status: "Not Paid!",
+                userEmail: session.user.email,
+            };
+            console.log("body")
+            console.log(body)
+            const response = await ordersService.postProduct(body);
+
+            if (response.status === 200) {
+                clearCart();
+                router.push(`/pay/${response.data.orderID}`);
+            } else {
+                toast.success("Producto hecho visible con exito.");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+};
 
     return (
         <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-blue-600 lg:flex-row">
@@ -71,7 +82,7 @@ const CartPage = () => {
                 </div>
                 <div className="flex justify-between">
                     <span className="">Service Cost</span>
-                    <span className="">${Number(totalPrice*0.034).toFixed(2)}</span>
+                    <span className="">${Number(totalPrice * 0.034).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                     <span className="">Delivery Cost</span>
@@ -80,7 +91,7 @@ const CartPage = () => {
                 <hr className="my-2" />
                 <div className="flex justify-between">
                     <span className="">TOTAL(INCL. VAT)</span>
-                    <span className="font-bold">${Number(totalPrice*1.034).toFixed(2)}</span>
+                    <span className="font-bold">${Number(totalPrice * 1.034).toFixed(2)}</span>
                 </div>
                 <button
                     className="bg-blue-600 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end"

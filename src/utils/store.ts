@@ -51,6 +51,7 @@ export const useCartStore = create(
                     }));
                 }
             },
+            clearCart: () => set({ ...INITIAL_STATE }), 
             removeFromCart(item) {
                 const uniqueIdentifier = item.optionTitle
                     ? `${item.id}-${item.optionTitle}`

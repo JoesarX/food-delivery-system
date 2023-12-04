@@ -1,3 +1,4 @@
+"use client"
 import Notification from '@/components/Notification'
 import NavBar from '@/components/NavBar'
 import Footer from '@/components/Footer'
@@ -13,6 +14,8 @@ import QueryProvider from '@/components/QueryProvider'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
+import { usePathname } from 'next/navigation'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -25,6 +28,26 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+  if (pathname.startsWith('/admin')) {
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          <AuthProvider>
+            <QueryProvider>
+            <div>
+              <NavBar />
+              {children}
+              <Footer />
+              <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+            </div>
+            </QueryProvider>
+          </AuthProvider>
+        </body>
+      </html>
+    )
+  }
+
   return (
     <html lang="en">
       <body className={inter.className}>

@@ -5,18 +5,22 @@ import { ProductType } from "@/types/types";
 import Image from "next/image";
 import React from "react";
 
-const getData = async(id:string) => {
-    const res = await fetch(`http://localhost:3000/api/products/${id}`,{
-    cache:"no-store"
-    })
-    if(!res.ok){
-        throw new Error("Failed to fetch data at menu page")
-    }
-    return res.json()
-}
+import productService from "@/services/productService";
+
+// const getData = async(id:string) => {
+//     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+//     const res = await fetch(`${apiUrl}/products/${id}`,{
+//     cache:"no-store"
+//     })
+//     if(!res.ok){
+//         throw new Error("Failed to fetch data at menu page")
+//     }
+//     return res.json()
+// }
 
 const SingleProductPage = async({params}:{params:{id:string}}) => {
-    const singleProduct : ProductType = await getData(params.id)
+    const singleProduct : ProductType = await productService.getOneProduct(params.id);
+
     return (
         <div className="p-4 lg:px-20 xl:px-40 h-screen flex flex-col justify-around text-blue-600 md:flex-row md:gap-8 md:items-center relative">
             {/* IMAGE CONTAINER */}
@@ -36,7 +40,6 @@ const SingleProductPage = async({params}:{params:{id:string}}) => {
                 <p>{singleProduct.desc}</p>
                 <Price product={singleProduct} />
             </div>
-            <DeleteButton id={singleProduct.id}/>
         </div>
     );
 };
