@@ -10,8 +10,10 @@ import {
 import { use } from "react";
 import { toast } from "react-toastify";
 
+//! DEPRECATED DELETE BUTTON
+//! It was replaced by the DeleteButton component in the admin folder
 
-const DeleteButton = ({id}: {id: string}) => {
+const DeleteButton = ({id}: {id: number}) => {
     const {data:session,status} = useSession();
     const router = useRouter();
     

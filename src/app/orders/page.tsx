@@ -5,50 +5,38 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
+
+import ordersService from '@/services/ordersService';
 
 const OrdersPage = () => {
     const { data: session, status } = useSession();
+    const userEmail = session?.user.email as string;
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [orders, setOrders] = React.useState<OrderType[]>([]);
 
     const router = useRouter();
 
-    if (status === "unauthenticated") {
-        router.push("/");
-    }
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/");
+        } else if (status === "authenticated") {
+            const fetchData = async () => {
+                try {
+                    const userEmail = session?.user.email as string;
+                    const data: OrderType[] = await ordersService.getOneUsersOrders(userEmail);
+                    setOrders(data);
+                    setIsLoading(false);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+            fetchData();
+        }
+    }, [status, router, session]);
 
-    const { isLoading, error, data } = useQuery({
-        queryKey: ["orders"],
-        queryFn: () =>
-            fetch("http://localhost:3000/api/orders").then((res) => res.json()),
-    });
 
-    const queryClient = useQueryClient();
-
-    const mutation = useMutation({
-        mutationFn: ({ id, status }: { id: string; status: string }) => {
-            return fetch(`http://localhost:3000/api/orders/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(status),
-            });
-        },
-        onSuccess() {
-            queryClient.invalidateQueries({ queryKey: ["orders"] });
-        },
-    });
-
-    const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
-        e.preventDefault();
-        const form = e.target as HTMLFormElement;
-        const input = form.elements[0] as HTMLInputElement;
-        const status = input.value;
-        console.log(status);
-        mutation.mutate({ id, status });
-        toast.success("The order status has been changed!")
-    };
 
     if (isLoading || status === "loading") return "Loading...";
 
@@ -65,7 +53,7 @@ const OrdersPage = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((item: OrderType) => (
+                    {orders.map((item: OrderType) => (
                         <tr className={`${item.status !== "delivered" && "bg-blue-50"}`} key={item.id}>
                             <td className="hidden md:block py-6 px-1">{item.id}</td>
                             <td className="py-6 px-1">
@@ -75,24 +63,8 @@ const OrdersPage = () => {
                             <td className="hidden md:block py-6 px-1">
                                 {item.products[0].title}
                             </td>
-                            {session?.user.isAdmin ? (
-                                <td>
-                                    <form
-                                        className="flex items-center justify-center gap-4"
-                                        onSubmit={(e) => handleUpdate(e, item.id)}
-                                    >
-                                        <input
-                                            placeholder={item.status}
-                                            className="p-2 ring-1 ring-blue-100 rounded-md"
-                                        />
-                                        <button className="bg-blue-400 p-2 rounded-full">
-                                            <Image src="/edit.png" alt="" width={20} height={20} />
-                                        </button>
-                                    </form>
-                                </td>
-                            ) : (
-                                <td className="py-6 px-1">{item.status}</td>
-                            )}
+                            <td className="py-6 px-1">{item.status}</td>
+
                         </tr>
                     ))}
                 </tbody>

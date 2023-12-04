@@ -43,7 +43,7 @@ const Price = ({ product }: { product: ProductType }) => {
             <h2 className="text-2xl font-bold">${total}</h2>
             {/* OPTIONS CONTAINER */}
             <div className="flex gap-4">
-                {product.options?.length &&
+                {product.options?.length !== undefined && product.options?.length > 0 &&
                     product.options?.map((option, index) => (
                         <button
                             key={option.title}

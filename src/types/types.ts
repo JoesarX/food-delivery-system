@@ -30,7 +30,7 @@ export type OrderType = {
 };
 
 export type CartItemType = {
-    id: string;
+    id: number;
     title: string;
     img?: string;
     price: number;
@@ -47,4 +47,5 @@ export type CartType = {
 export type ActionTypes = {
     addToCart: (item: CartItemType) => void;
     removeFromCart: (item: CartItemType) => void;
+    clearCart: () => void;
 }

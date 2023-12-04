@@ -61,12 +61,12 @@ const AddProductPage = () => {
                 const data: Category[] = await categoryService.getAllCategoriesSlugs();
                 console.log(`data: ${data}`);
                 setCategories(data);
+                setIsLoading(false);
             } catch (error) {
                 console.log(error);
             }
         };
         fetchCategories();
-        setIsLoading(false);
     }, []);
 
 
