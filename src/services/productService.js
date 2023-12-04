@@ -1,8 +1,8 @@
 import axios from 'axios';
 //import { getAuthSession } from "@/utils/auth";
 
-const API_URL = 'http://localhost:8000';
-//const API_URL = 'https://los-toneles.azurewebsites.net';
+//const API_URL = 'http://localhost:8000';
+const API_URL = 'https://los-toneles.azurewebsites.net';
 
 //*traer todos los productos
 export const getAllProducts= async () => {
