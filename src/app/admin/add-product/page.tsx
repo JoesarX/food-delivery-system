@@ -11,6 +11,9 @@ import {
     faPlus
 } from "@fortawesome/free-solid-svg-icons";
 
+import categoryService from '@/services/categoryService';
+import productService from '@/services/productService';
+
 
 type Inputs = {
     title: string;
@@ -32,7 +35,7 @@ type Option = {
 
 const AddProductPage = () => {
     const { data: session, status } = useSession();
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const [isLoading, setIsLoading] = useState(true);
 
     const [inputs, setInputs] = useState<Inputs>({
         title: "",
@@ -53,24 +56,18 @@ const AddProductPage = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchCategories = async () => {
             try {
-                const res = await fetch(`${apiUrl}/categories/nameAndSlug`, {
-                    cache: "no-store"
-                });
-                if (!res.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-                const data: Category[] = await res.json();
+                const data: Category[] = await categoryService.getAllCategoriesSlugs();
+                console.log(`data: ${data}`);
                 setCategories(data);
             } catch (error) {
-                console.error(error);
-                toast.error("Hubo un error al cargar las categorias, porfavor intente de nuevo.");
-                // Handle errors here, e.g., show an error message to the user.
+                console.log(error);
             }
         };
-        fetchData();
-    }, [categories, apiUrl]);
+        fetchCategories();
+        setIsLoading(false);
+    }, []);
 
 
     if (status === "loading") {
@@ -207,7 +204,7 @@ const AddProductPage = () => {
         e.preventDefault();
         if (!validate()) return;
         try {
-            
+
             //const url = await upload();
 
             //change the price in case of empty and having options just so its not 0
@@ -216,18 +213,16 @@ const AddProductPage = () => {
                     inputs.price = 99;
                 }
             }
-            const res = await fetch(`${apiUrl}/products/adminView`, {
-                method: "POST",
-                body: JSON.stringify({
-                    img: '/temporary/p2.png',
-                    ...inputs,
-                    options,
-                }),
-            });
 
-            const data = await res.json();
-            if (!res.ok) {
-                toast.error(`Hubo un error al agregar el producto: ${data.message}`);
+            const productAdded = {
+                img: '/temporary/p2.png',
+                ...inputs,
+                options,
+            };
+
+            const response = await productService.postProduct(productAdded);
+            if (response.status !== 200) {
+                toast.error(`Hubo un error al agregar el producto`);
             } else {
                 router.push(`/admin`);
             }
@@ -235,8 +230,11 @@ const AddProductPage = () => {
             console.log(err);
         }
     };
-
+    if (isLoading) {
+        return <div>Loading...</div>; // Or replace with your own loading component
+    }
     return (
+
         <div className="p-4 sm:px-10 md:px-20 lg:px-40 xl:px-60 flex items-center justify-center text-blue-800">
             <form onSubmit={handleSubmit} className="flex flex-wrap gap-6 ">
                 <h1 className="text-4xl mb-2 text-indigo-900 font-bold">
@@ -370,6 +368,7 @@ const AddProductPage = () => {
             </form>
         </div>
     );
+
 };
 
 export default AddProductPage;

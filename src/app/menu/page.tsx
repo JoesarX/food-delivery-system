@@ -3,16 +3,18 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const getData = async (category: string) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const res = await fetch(`${apiUrl}/products`, {
-        cache: "no-store"
-    })
-    if (!res.ok) {
-        throw new Error("Failed to fetch data at menu page")
-    }
-    return res.json()
-}
+import productService from "@/services/productService";
+
+// const getData = async (category: string) => {
+//     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+//     const res = await fetch(`${apiUrl}/products`, {
+//         cache: "no-store"
+//     })
+//     if (!res.ok) {
+//         throw new Error("Failed to fetch data at menu page")
+//     }
+//     return res.json()
+// }
 
 type Props = {
     params: { category: string };
@@ -20,7 +22,7 @@ type Props = {
 
 const CategoryPage = async ({ params }: Props) => {
 
-    const products: ProductType[] = await getData(params.category);
+    const products: ProductType[] = await productService.getAllVisibleProducts();
 
     return (
         <div className="flex flex-wrap text-blue-600">

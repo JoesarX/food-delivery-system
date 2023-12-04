@@ -7,6 +7,7 @@ export const GET = async (req: NextRequest) => {
     const session = await getAuthSession();
 
     if (session?.user.isAdmin) {
+
         try {
             const products = await prisma.product.findMany({
                 orderBy: [

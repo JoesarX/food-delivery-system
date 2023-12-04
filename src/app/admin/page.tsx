@@ -16,36 +16,30 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { MdOutlineAddCircle } from 'react-icons/md';
 
+import productService from "@/services/productService";
+
 const AdminHome = () => {
     //* Variables
     const { data: session, status } = useSession();
     const router = useRouter();
     const [featuredProducts, setFeaturedProducts] = useState<ProductType[]>([]);
     const [isProductsChanging, setIsProductsChanging] = useState(true);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     //* Data Fetching from API
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch(`${apiUrl}/products/adminView`, {
-                    cache: "no-store"
-                });
-                if (!res.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-                const data: ProductType[] = await res.json();
+                const data: ProductType[] = await productService.getAllProducts();
                 setFeaturedProducts(data);
             } catch (error) {
                 console.error(error);
-                // Handle errors here, e.g., show an error message to the user.
             }
         };
         if (isProductsChanging) {
             fetchData(); // Trigger re-fetch when isProductsChanging is true
             setIsProductsChanging(false); // Reset the state
         }
-    }, [apiUrl, isProductsChanging]);
+    }, [isProductsChanging]);
 
     //* Loading and Authentication
     if (status == "loading") {
@@ -62,24 +56,27 @@ const AdminHome = () => {
     };
 
     //* Edit Product Redirect
-    const handleEditProductRedirect = (id:string) => {
+    const handleEditProductRedirect = (id: number) => {
         router.push(`/admin/edit-product/${id}`);
     };
 
     //* PUT Visibility and Featured
-    const handleUpdateVisOrFeat = async (id: string, action: string, state: boolean) => {
-        console.log(`${apiUrl}/products/${id}`);
+    const handleUpdateVisOrFeat = async (id: number, action: string, state: boolean) => {
         const body = action === "visibility" ? { isVisible: state } : { isFeatured: state };
-        console.log(`${apiUrl}/products/${id}`)
-        const res = await fetch(`${apiUrl}/products/${id}`, {
-            method: "PUT",
-            body: JSON.stringify({
-                ...body,
-            }),
-        });
-
-        const data2 = await res.json();
-        if (res.ok) {
+        // const res = await fetch(`${apiUrl}/products/${id}`, {
+        //     method: "PUT",
+        //     body: JSON.stringify({
+        //         ...body,
+        //     }),
+        // });
+        let response: any;
+        if (action === "visibility") {
+            response = await productService.editIsVisibleProduct(id, body);
+        }else if (action === "featured") {
+            response = await productService.editIsFeaturedProduct(id, body);
+        }
+        
+        if (response.status === 200) {
             if (action === "visibility" && state === true) {
                 toast.success("Producto hecho visible con exito.");
             } else if (action === "visibility" && state === false) {
@@ -91,14 +88,14 @@ const AdminHome = () => {
             }
             setIsProductsChanging(true);
         } else {
-            const errorData = await res.json();
+            const errorData = await response.data;
             toast.error("Hubo un fallo al cambiar el producto.");
             toast.error(errorData.error);
             return;
         }
     }
 
-    const handleUpdateVisOrFeatModal = async (id: string, action: string, state: boolean) => {
+    const handleUpdateVisOrFeatModal = async (id: number, action: string, state: boolean) => {
         let titleText = "";
         let textText = "";
         if (action === "visibility" && state === false) {
@@ -135,20 +132,18 @@ const AdminHome = () => {
 
 
     //* Delete Product
-    const handleProductDelete = async (id: string) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const res = await fetch(`${apiUrl}/products/${id}`, { method: "DELETE" })
-        if (res.ok) {
+    const handleProductDelete = async (id: number) => {
+        const res = await productService.deleteProduct(id);
+        if (res.status === 200) {
             toast.success("Producto eleminado con exito.")
             setIsProductsChanging(true);
         } else {
-            const data = await res.json()
             toast.error("Hubo un fallo al eliminar el producto.")
-            toast.error(data.message)
+            toast.error(res.data.message)
         }
     }
 
-    const handleProductDeleteModal = async (id: string) => {
+    const handleProductDeleteModal = async (id: number) => {
         Swal.fire({
             title: 'Esta seguro que quiere eliminar el producto?',
             text: "Una vez borrado, no se podra recuperar!",

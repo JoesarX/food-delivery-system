@@ -12,6 +12,8 @@ import {
     faPlus
 } from "@fortawesome/free-solid-svg-icons";
 
+import categoryService from "@/services/categoryService";
+import productService from "@/services/productService";
 
 type Inputs = {
     title: string | undefined;
@@ -32,8 +34,7 @@ type Option = {
 
 const EditProductPage = ({ params }: { params: { id: string } }) => {
     const { data: session, status } = useSession();
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
+    const [isLoading, setIsLoading] = useState(true);
     const id = params.id;
 
     const [inputs, setInputs] = useState<Inputs>({
@@ -54,30 +55,26 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
 
     const [categories, setCategories] = useState<Category[]>([]);
 
+    
+
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log("fetching")
-                // Fetch categories
-                const res = await fetch(`${apiUrl}/categories/nameAndSlug`, {
-                    cache: "no-store"
-                });
-                if (!res.ok) {
-                    throw new Error("Failed to fetch data");
+                //* Fetch categories
+                try {
+                    const data: Category[] = await categoryService.getAllCategoriesSlugs();
+                    console.log(`data: ${data}`);
+                    setCategories(data);
+                } catch (error) {
+                    console.log(error);
                 }
-                const data: Category[] = await res.json();
-                setCategories(data);
 
-                // Fetch product details by ID
-                const productRes = await fetch(`${apiUrl}/products/${id}`, {
-                    cache: "no-store"
-                });
-                if (!productRes.ok) {
-                    throw new Error("Failed to fetch product");
-                }
-                const productData: ProductType = await productRes.json();
+                //* Fetch product details by ID
+                const productData: ProductType = await productService.getOneProduct(id);
+                console.log(`productData: ${productData}`);
+                console.log(productData);
 
                 // Populate the inputs state with product details
                 setInputs({
@@ -90,6 +87,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
 
                 // Populate the options state with product options
                 setOptions(productData.options || []);
+                setIsLoading(false);
             } catch (error) {
                 console.error(error);
                 toast.error("Hubo un error al cargar las categorias, porfavor intente de nuevo.");
@@ -97,7 +95,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             }
         };
         fetchData();
-    }, [ id, apiUrl]);
+    }, [ id ]);
 
 
     if (status === "loading") {
@@ -243,19 +241,16 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                     inputs.price = 99;
                 }
             }
-            const res = await fetch(`${apiUrl}/products/${id}`, {
-                method: "PUT",
-                body: JSON.stringify({
-                    img: '/temporary/p2.png',
-                    ...inputs,
-                    catSlug: selectedCategory,
-                    options,
-                }),
-            });
-
-            const data = await res.json();
-            if (!res.ok) {
-                toast.error(`Hubo un error al agregar el producto: ${data.message}`);
+            const productEdited = {
+                img: '/temporary/p2.png',
+                ...inputs,
+                catSlug: selectedCategory,
+                options,
+            };
+            
+            const response = await productService.editProduct(id, productEdited);
+            if (response.status !== 200) {
+                toast.error(`Hubo un error al agregar el producto`);
             } else {
                 router.push(`/admin`);
             }
@@ -263,6 +258,10 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             console.log(err);
         }
     };
+
+    if (isLoading) {
+        return <div>Loading...</div>; // Or replace with your own loading component
+    }
 
     return (
         <div className="p-4 sm:px-10 md:px-20 lg:px-40 xl:px-60 flex items-center justify-center text-blue-800">

@@ -2,22 +2,11 @@ import { ProductType } from "@/types/types";
 import Image from "next/image";
 import React from "react";
 
-const getData = async ()=>{
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const res = await fetch(`${apiUrl}/products/featured`,{
-    cache:"no-store"
-  })
-
-  if(!res.ok){
-    throw new Error("Failed!");
-  }
-
-  return res.json()
-}
+import productService from "@/services/productService";
 
 const Featured = async () => {
 
-  const featuredProducts:ProductType[] = await getData()
+  const featuredProducts: ProductType[] = await productService.getAllFeaturedProducts();
 
   return (
     <div className="w-full overflow-x-scroll text-blue-600">
