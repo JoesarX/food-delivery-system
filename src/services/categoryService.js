@@ -8,7 +8,7 @@ const API_URL = 'https://los-toneles.azurewebsites.net';
 export const getAllCategories = async () => {
     try {
         const session = await getAuthSession();
-        const res = await axios.get(`${API_URL}/categorias`, session);
+        const res = await axios.get(`${API_URL}/category`, session);
         return res.data;
     } catch (error) {
         

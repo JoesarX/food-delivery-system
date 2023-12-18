@@ -163,7 +163,7 @@ const AdminHome = () => {
 
 
     return (
-        <div className="w-full overflow-y-scroll  text-blue-600">
+        <div className="w-full overflow-y-scroll  text-blue-800">
             {/* PRODUCT TABLE */}
             <div className="flex justify-end">
                 <button className="bg-blue-800 text-white p-2 rounded-md w-30 inline-flex items-center justify-center m-3 mx-6" onClick={handleAddProductRedirect} title='Hacer Producto Invisible'>
@@ -237,7 +237,7 @@ const AdminHome = () => {
                             )}
 
 
-                            <button className="bg-blue-600 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto'  onClick={() => handleEditProductRedirect(item.id)}>
+                            <button className="bg-blue-800 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto'  onClick={() => handleEditProductRedirect(item.id)}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </button>
                             <button className="bg-red-600 text-white p-2 rounded-md w-9" title='Eliminar Producto' onClick={() => handleProductDeleteModal(item.id)}>

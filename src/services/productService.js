@@ -16,6 +16,17 @@ export const getAllProducts= async () => {
     }
 };
 
+//*traer todos los productos por categoria
+export const getAllProductsCategoria= async (category) => {
+    try {
+        const res = await axios.get(`${API_URL}/product/menu/${category}`);
+        return res.data;
+    } catch (error) {
+        
+        throw new Error('Failed to fetch product');
+    }
+};
+
 //*traer todos los productos featured
 export const getAllFeaturedProducts= async () => {
     try {
@@ -103,6 +114,7 @@ export const deleteProduct = async (id) => {
 };
 const Services = {
     getAllProducts,
+    getAllProductsCategoria,
     getAllFeaturedProducts,
     getAllVisibleProducts,
     getOneProduct,

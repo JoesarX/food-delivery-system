@@ -2,9 +2,10 @@ export type MenuType = {
     id: string;
     slug: string;
     title: string;
-    desc?: string;
+    description?: string;
     img?: string;
     color: string;
+    createdAt: string;
 }[];
 
 export type ProductType = {

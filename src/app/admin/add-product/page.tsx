@@ -359,7 +359,7 @@ const AddProductPage = () => {
                 <div className="flex justify-center items-center w-full">
                     <button
                         type="submit"
-                        className="bg-blue-600 p-4 text-white rounded-md w-48 text-lg font-bold"
+                        className="bg-blue-800 p-4 text-white rounded-md w-48 text-lg font-bold"
                     >
                         Crear Producto
                     </button>

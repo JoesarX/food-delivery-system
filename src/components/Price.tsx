@@ -61,7 +61,7 @@ const Price = ({ product }: { product: ProductType }) => {
             {/* QUANTITY AND ADD BUTTON CONTAINER */}
             <div className="flex justify-between items-center">
                 {/* QUANTITY */}
-                <div className="flex justify-between w-full p-3 ring-1 ring-blue-600">
+                <div className="flex justify-between w-full p-3 ring-1 ring-blue-800">
                     <span>Cantidad</span>
                     <div className="flex gap-4 items-center">
                         <button
@@ -79,7 +79,7 @@ const Price = ({ product }: { product: ProductType }) => {
                 </div>
                 {/* CART BUTTON */}
                 <button
-                    className="uppercase w-56 bg-blue-600 text-white p-3 ring-1 ring-blue-600"
+                    className="uppercase w-56 bg-blue-800 text-white p-3 ring-1 ring-blue-800"
                     onClick={handleCart}
                 >
                     Agregar

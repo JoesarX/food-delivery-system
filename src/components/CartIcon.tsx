@@ -36,7 +36,7 @@ const CartIcon = () => {
                     />
                 </div>
                 {session?.user.isAdmin ? (
-                    <button className="p-1 bg-blue-600 text-white rounded-md">Add product</button>
+                    <button className="p-1 bg-blue-800 text-white rounded-md">Add product</button>
                 ) : (
                     <span>Cart ({totalItems})</span>
                 )}

@@ -9,7 +9,7 @@ const Featured = async () => {
   const featuredProducts: ProductType[] = await productService.getAllFeaturedProducts();
 
   return (
-    <div className="w-full overflow-x-scroll text-blue-600">
+    <div className="w-full overflow-x-scroll text-blue-800">
       {/* WRAPPER */}
       <div className="w-max flex">
         {/* SINGLE ITEM */}
@@ -29,8 +29,8 @@ const Featured = async () => {
               <h1 className="text-xl font-bold uppercase xl:text-2xl 2xl:text-3xl">{item.title}</h1>
               <p className="p-4 2xl:p-8">{item.desc}</p>
               <span className="text-xl font-bold">${item.price}</span>
-              <button className="bg-blue-600 text-white p-2 rounded-md">
-                Add to Cart
+              <button className="bg-blue-800 text-white p-2 rounded-md">
+                Agregar al Carrito
               </button>
             </div>
           </div>

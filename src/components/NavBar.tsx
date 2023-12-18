@@ -29,7 +29,7 @@ const NavBar = () => {
     const isAdmin = session?.user.isAdmin;
 
     return (
-        <div className='h-12 text-blue-600 p-4 flex items-center justify-between border-b-2 border-b-blue-600 uppercase md:h-24 lg:px-8'>
+        <div className='h-12 text-blue-800 p-4 flex items-center justify-between border-b-2 border-b-blue-800 uppercase md:h-20 lg:px-8'>
             {/* LEFT LINKS */}
             <div className='hidden md:flex gap-4 flex-1'>
                 <Link href={"/"}>Inicio</Link>

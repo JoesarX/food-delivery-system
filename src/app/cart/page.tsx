@@ -49,7 +49,7 @@ const CartPage = () => {
 };
 
     return (
-        <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-blue-600 lg:flex-row">
+        <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-blue-800 lg:flex-row">
             {/* PRODUCTS CONTAINER */}
             <div className="h-1/2 p-4 flex flex-col justify-center overflow-scroll lg:h-full lg:w-2/3 2xl:w-1/2 lg:px-20 xl:px-40">
                 {/* SINGLE ITEM */}
@@ -94,7 +94,7 @@ const CartPage = () => {
                     <span className="font-bold">${Number(totalPrice * 1.034).toFixed(2)}</span>
                 </div>
                 <button
-                    className="bg-blue-600 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end"
+                    className="bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end"
                     onClick={handleCheckout}
                 >
                     CHECKOUT

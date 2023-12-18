@@ -1,49 +1,35 @@
-import { ProductType } from "@/types/types";
-import Image from "next/image";
+import { MenuType } from "@/types/types";
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
+import categoryService from "@/services/categoryService";
 
-import productService from "@/services/productService";
 
-// const getData = async (category: string) => {
-//     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-//     const res = await fetch(`${apiUrl}/products`, {
-//         cache: "no-store"
-//     })
-//     if (!res.ok) {
-//         throw new Error("Failed to fetch data at menu page")
-//     }
-//     return res.json()
-// }
+const MenuPage = async () => {
 
-type Props = {
-    params: { category: string };
-};
-
-const CategoryPage = async ({ params }: Props) => {
-
-    const products: ProductType[] = await productService.getAllVisibleProducts();
+    const menu: MenuType = await categoryService.getAllCategories();
 
     return (
-        <div className="flex flex-wrap text-blue-600">
-            {products.map((item) => (
-                <Link className="w-full h-[60vh] border-r-2 border-b-2 border-blue-600 sm:w-1/2 lg:w-1/3 p-4 flex flex-col justify-between group odd:bg-sky-50" href={`/product/${item.id}`} key={item.id}>
-                    {/* IMAGE CONTAINER */}
-                    {item.img && (
-                        <div className="relative h-[80%]">
-                            <Image src={item.img} alt="" fill className="object-contain" />
+        <div className="p-6 lg:px-20 xl:px-40 h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col md:flex-row items-center">
+            {menu.map((category) => (
+                <Link
+                    href={`/menu/${category.slug}`}
+                    key={category.id}
+                    className="w-full h-1/3 bg-cover p-8 md:h-1/2"
+                >
+                    {category.img && (
+                        <div className="relative h-[50%] bottom-5">
+                            <Image src={category.img} alt="" fill className="object-contain" />
                         </div>
                     )}
-                    {/* TEXT CONTAINER */}
-                    <div className="flex items-center justify-between font-bold">
-                        <h1 className="text-2xl uppercase p-2">{item.title}</h1>
-                        <h2 className="group-hover:hidden text-xl">{item.options?.length ? item.options[0].additionalPrice : item.price}</h2>
-                        <button className="hidden group-hover:block uppercase bg-blue-600 text-white p-2 rounded-md">Add to Cart</button>
+                    <div className={`text-black w-full`}>
+                        <h1 className="uppercase font-bold text-3xl text-center">{category.title}</h1>
+                        <p className="text-base my-4 text-center">{category.description}</p>
                     </div>
                 </Link>
             ))}
         </div>
     );
-};
+}
 
-export default CategoryPage;
+export default MenuPage
