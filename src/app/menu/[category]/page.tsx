@@ -4,14 +4,30 @@ import Link from "next/link";
 import React from "react";
 
 import productService from "@/services/productService";
+import { get } from "http";
+
+
+const getData = async (category: string) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/products/category?cat=${category}`, {
+        cache: "no-store"
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch data at menu page")
+    }
+    return res.json()
+}
 
 type Props = {
     params: { category: string };
 };
 
+
 const CategoryPage = async ({ params }: Props) => {
 
-    const products: ProductType[] = await productService.getAllProductsCategoria(params.category);
+    //const products: ProductType[] = await productService.getAllProductsCategoria(params.category);
+    const products: ProductType[] = await getData(params.category);
 
     return (
         <div className="flex flex-wrap text-blue-800">

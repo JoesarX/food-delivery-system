@@ -4,9 +4,22 @@ import React from "react";
 
 import productService from "@/services/productService";
 
+const getData = async () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${apiUrl}/products/featured`, {
+    cache: "no-store"
+  })
+
+  if (!res.ok) {
+    throw new Error("Failed!");
+  }
+
+  return res.json()
+}
+
 const Featured = async () => {
 
-  const featuredProducts: ProductType[] = await productService.getAllFeaturedProducts();
+  const featuredProducts: ProductType[] = await getData();
 
   return (
     <div className="w-full overflow-x-scroll text-blue-800">

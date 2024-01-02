@@ -16,30 +16,36 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { MdOutlineAddCircle } from 'react-icons/md';
 
-import productService from "@/services/productService";
-
 const AdminHome = () => {
     //* Variables
     const { data: session, status } = useSession();
     const router = useRouter();
     const [featuredProducts, setFeaturedProducts] = useState<ProductType[]>([]);
     const [isProductsChanging, setIsProductsChanging] = useState(true);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     //* Data Fetching from API
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data: ProductType[] = await productService.getAllProducts();
+                const res = await fetch(`${apiUrl}/products/admin`, {
+                    cache: "no-store"
+                });
+                if (!res.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+                const data: ProductType[] = await res.json();
                 setFeaturedProducts(data);
             } catch (error) {
                 console.error(error);
+                // Handle errors here, e.g., show an error message to the user.
             }
         };
         if (isProductsChanging) {
             fetchData(); // Trigger re-fetch when isProductsChanging is true
             setIsProductsChanging(false); // Reset the state
         }
-    }, [isProductsChanging]);
+    }, [apiUrl, isProductsChanging]);
 
     //* Loading and Authentication
     if (status == "loading") {
@@ -56,27 +62,24 @@ const AdminHome = () => {
     };
 
     //* Edit Product Redirect
-    const handleEditProductRedirect = (id: number) => {
+    const handleEditProductRedirect = (id:number) => {
         router.push(`/admin/edit-product/${id}`);
     };
 
     //* PUT Visibility and Featured
     const handleUpdateVisOrFeat = async (id: number, action: string, state: boolean) => {
+        console.log(`${apiUrl}/products/${id}`);
         const body = action === "visibility" ? { isVisible: state } : { isFeatured: state };
-        // const res = await fetch(`${apiUrl}/products/${id}`, {
-        //     method: "PUT",
-        //     body: JSON.stringify({
-        //         ...body,
-        //     }),
-        // });
-        let response: any;
-        if (action === "visibility") {
-            response = await productService.editIsVisibleProduct(id, body);
-        }else if (action === "featured") {
-            response = await productService.editIsFeaturedProduct(id, body);
-        }
-        
-        if (response.status === 200) {
+        console.log(`${apiUrl}/products/${id}`)
+        const res = await fetch(`${apiUrl}/products/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                ...body,
+            }),
+        });
+
+        const data2 = await res.json();
+        if (res.ok) {
             if (action === "visibility" && state === true) {
                 toast.success("Producto hecho visible con exito.");
             } else if (action === "visibility" && state === false) {
@@ -88,7 +91,7 @@ const AdminHome = () => {
             }
             setIsProductsChanging(true);
         } else {
-            const errorData = await response.data;
+            const errorData = await res.json();
             toast.error("Hubo un fallo al cambiar el producto.");
             toast.error(errorData.error);
             return;
@@ -133,13 +136,15 @@ const AdminHome = () => {
 
     //* Delete Product
     const handleProductDelete = async (id: number) => {
-        const res = await productService.deleteProduct(id);
-        if (res.status === 200) {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/products/${id}`, { method: "DELETE" })
+        if (res.ok) {
             toast.success("Producto eleminado con exito.")
             setIsProductsChanging(true);
         } else {
+            const data = await res.json()
             toast.error("Hubo un fallo al eliminar el producto.")
-            toast.error(res.data.message)
+            toast.error(data.message)
         }
     }
 
@@ -163,7 +168,7 @@ const AdminHome = () => {
 
 
     return (
-        <div className="w-full overflow-y-scroll  text-blue-800">
+        <div className="w-full overflow-y-scroll  text-blue-600">
             {/* PRODUCT TABLE */}
             <div className="flex justify-end">
                 <button className="bg-blue-800 text-white p-2 rounded-md w-30 inline-flex items-center justify-center m-3 mx-6" onClick={handleAddProductRedirect} title='Hacer Producto Invisible'>
@@ -237,7 +242,7 @@ const AdminHome = () => {
                             )}
 
 
-                            <button className="bg-blue-800 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto'  onClick={() => handleEditProductRedirect(item.id)}>
+                            <button className="bg-blue-600 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto'  onClick={() => handleEditProductRedirect(item.id)}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </button>
                             <button className="bg-red-600 text-white p-2 rounded-md w-9" title='Eliminar Producto' onClick={() => handleProductDeleteModal(item.id)}>

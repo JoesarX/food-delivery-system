@@ -6,20 +6,22 @@ import Image from "next/image";
 import React from "react";
 
 import productService from "@/services/productService";
+import { get } from "http";
 
-// const getData = async(id:string) => {
-//     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-//     const res = await fetch(`${apiUrl}/products/${id}`,{
-//     cache:"no-store"
-//     })
-//     if(!res.ok){
-//         throw new Error("Failed to fetch data at menu page")
-//     }
-//     return res.json()
-// }
+const getData = async(id:string) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/products/${id}`,{
+    cache:"no-store"
+    })
+    if(!res.ok){
+        throw new Error("Failed to fetch data at menu page")
+    }
+    return res.json()
+}
 
 const SingleProductPage = async({params}:{params:{id:string}}) => {
-    const singleProduct : ProductType = await productService.getOneProduct(params.id);
+    //const singleProduct : ProductType = await productService.getOneProduct(params.id);
+    const singleProduct : ProductType = await getData(params.id);
 
     return (
         <div className="p-4 lg:px-20 xl:px-40 h-screen flex flex-col justify-around text-blue-800 md:flex-row md:gap-8 md:items-center relative">

@@ -8,6 +8,13 @@ export type MenuType = {
     createdAt: string;
 }[];
 
+export type MenuTypeSimple = {
+    title: string;
+    description?: string;
+    img?: string;
+    slug: string;
+}[];
+
 export type ProductType = {
     id: number;
     title: string;
