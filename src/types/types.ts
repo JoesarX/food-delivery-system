@@ -8,8 +8,15 @@ export type MenuType = {
     createdAt: string;
 }[];
 
+export type MenuTypeSimple = {
+    title: string;
+    description?: string;
+    img?: string;
+    slug: string;
+}[];
+
 export type ProductType = {
-    id: number;
+    id: string;
     title: string;
     desc: string;
     img?: string;
@@ -31,7 +38,7 @@ export type OrderType = {
 };
 
 export type CartItemType = {
-    id: number;
+    id: string;
     title: string;
     img?: string;
     price: number;

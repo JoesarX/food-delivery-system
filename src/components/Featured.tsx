@@ -1,12 +1,32 @@
+"use client"
 import { ProductType } from "@/types/types";
 import Image from "next/image";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-import productService from "@/services/productService";
+const Featured: React.FC = () => {
+  const [featuredProducts, setFeaturedProducts] = useState<ProductType[]>([]);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const Featured = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/products/featured`, {
+          cache: "no-store"
+        });
 
-  const featuredProducts: ProductType[] = await productService.getAllFeaturedProducts();
+        if (!res.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const data = await res.json();
+        setFeaturedProducts(data);
+      } catch (error) {
+        console.error("Error fetching featured products:", error);
+      }
+    };
+
+    fetchData();
+  }, [apiUrl]); 
 
   return (
     <div className="w-full overflow-x-scroll text-blue-800">

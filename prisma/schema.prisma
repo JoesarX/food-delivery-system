@@ -65,20 +65,18 @@ model Category {
   color     String
   img       String
   slug      String    @unique
-  products  Product[]
 }
 
 model Product {
-  id         Int   @id 
+  id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
   title      String
   desc       String
   img        String?
   price      Decimal
-  isFeatured Boolean  @default(false)
-  isVisible  Boolean  @default(true)
+  isFeatured Boolean  
+  isVisible  Boolean  
   options    Json
-  category   Category @relation(fields: [catSlug], references: [slug])
   catSlug    String
   // sizes      ProductSizes[]
 }

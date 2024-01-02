@@ -8,12 +8,10 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
-import ordersService from '@/services/ordersService';
-
 const OrdersPage = () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const { data: session, status } = useSession();
     const userEmail = session?.user.email as string;
-    const [isLoading, setIsLoading] = React.useState(true);
     const [orders, setOrders] = React.useState<OrderType[]>([]);
 
     const router = useRouter();
@@ -25,20 +23,27 @@ const OrdersPage = () => {
             const fetchData = async () => {
                 try {
                     const userEmail = session?.user.email as string;
-                    const data: OrderType[] = await ordersService.getOneUsersOrders(userEmail);
+
+                    const response = await fetch(`${apiUrl}/orders`, {
+                        cache: "no-store"
+                    });
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch product");
+                    }
+
+                    const data: OrderType[] = await response.json();
                     setOrders(data);
-                    setIsLoading(false);
                 } catch (error) {
                     console.error(error);
                 }
             };
             fetchData();
         }
-    }, [status, router, session]);
+    }, [status, router, session, apiUrl]);
 
 
 
-    if (isLoading || status === "loading") return "Loading...";
+    if (status === "loading") return "Loading...";
 
     return (
         <div className="p-4 lg:px-20 xl:px-40">

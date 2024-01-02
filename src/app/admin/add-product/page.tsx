@@ -11,9 +11,6 @@ import {
     faPlus
 } from "@fortawesome/free-solid-svg-icons";
 
-import categoryService from '@/services/categoryService';
-import productService from '@/services/productService';
-
 
 type Inputs = {
     title: string;
@@ -22,11 +19,6 @@ type Inputs = {
     catSlug: string;
 };
 
-type Category = {
-    id: string;
-    title: string;
-    slug: string;
-};
 
 type Option = {
     title: string;
@@ -35,7 +27,7 @@ type Option = {
 
 const AddProductPage = () => {
     const { data: session, status } = useSession();
-    const [isLoading, setIsLoading] = useState(true);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const [inputs, setInputs] = useState<Inputs>({
         title: "",
@@ -49,26 +41,12 @@ const AddProductPage = () => {
         additionalPrice: 0,
     });
 
+    const categories = ['Comida', 'Bebida', 'Otros'];
+
     const [options, setOptions] = useState<Option[]>([]);
     const [file, setFile] = useState<File>();
-    const [categories, setCategories] = useState<Category[]>([]);
 
     const router = useRouter();
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const data: Category[] = await categoryService.getAllCategoriesSlugs();
-                console.log(`data: ${data}`);
-                setCategories(data);
-                setIsLoading(false);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchCategories();
-    }, []);
-
 
     if (status === "loading") {
         return <p>Loading...</p>;
@@ -214,25 +192,27 @@ const AddProductPage = () => {
                 }
             }
 
-            const productAdded = {
-                img: '/temporary/p2.png',
-                ...inputs,
-                options,
-            };
+            const res = await fetch(`${apiUrl}/products/admin`, {
+                method: "POST",
+                body: JSON.stringify({
+                    img: '/temporary/p2.png',
+                    ...inputs,
+                    options,
+                }),
+            });
 
-            const response = await productService.postProduct(productAdded);
-            if (response.status !== 200) {
-                toast.error(`Hubo un error al agregar el producto`);
+            const data = await res.json();
+            if (!res.ok) {
+                console.log(`error in post: ${data.message}`)
+                toast.error(`Hubo un error al agregar el producto: ${data.message}`);
             } else {
                 router.push(`/admin`);
             }
+
         } catch (err) {
             console.log(err);
         }
     };
-    if (isLoading) {
-        return <div>Loading...</div>; // Or replace with your own loading component
-    }
     return (
 
         <div className="p-4 sm:px-10 md:px-20 lg:px-40 xl:px-60 flex items-center justify-center text-blue-800">
@@ -303,8 +283,8 @@ const AddProductPage = () => {
                     >
                         <option value="">Seleccione una Categoria de Producto</option>
                         {categories.map((category) => (
-                            <option key={category.id} value={category.slug}>
-                                {category.title}
+                            <option key={category} value={category}>
+                                {category}
                             </option>
                         ))}
                     </select>

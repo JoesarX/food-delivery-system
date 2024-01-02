@@ -6,9 +6,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 
-import ordersService from '@/services/ordersService';
-
 const CartPage = () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const { products, totalItems, totalPrice, removeFromCart, clearCart } = useCartStore();
     const { data: session } = useSession();
     const router = useRouter();
@@ -18,35 +17,37 @@ const CartPage = () => {
     }, []);
 
     const handleCheckout = async () => {
-    if (!session) {
-        router.push("/login");
-    } else {
-        if (totalItems === 0 && totalPrice === 0) {
-            toast.error("No puede proceder a ordenar si no tiene productos en el carrito.");
-            return;
-        }
-        try {
-            const body = {
-                price: totalPrice,
-                products,
-                status: "Not Paid!",
-                userEmail: session.user.email,
-            };
-            console.log("body")
-            console.log(body)
-            const response = await ordersService.postProduct(body);
-
-            if (response.status === 200) {
-                clearCart();
-                router.push(`/pay/${response.data.orderID}`);
-            } else {
-                toast.success("Producto hecho visible con exito.");
+        if (!session) {
+            router.push("/login");
+        } else {
+            if (totalItems === 0 && totalPrice === 0) {
+                toast.error("No puede proceder a ordenar si no tiene productos en el carrito.");
+                return;
             }
-        } catch (err) {
-            console.log(err);
+            try {
+                const res = await fetch(`${apiUrl}/orders`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        price: totalPrice,
+                        products,
+                        status: "Not Paid!",
+                        userEmail: session.user.email,
+                    }),
+                });
+                const data = await res.json()
+                if (!res.ok) {
+                    console.log(`error in post: ${data.message}`)
+                    toast.error(`Hubo un error al procesar su orden, por favor intente mas tarde.`);
+                } else {
+                    clearCart();
+                    router.push(`/pay/${data.orderID}`);
+                }
+            } catch (err) {
+                console.log(err);
+            }
         }
-    }
-};
+    };
 
     return (
         <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-blue-800 lg:flex-row">
