@@ -15,6 +15,7 @@ import QueryProvider from '@/components/QueryProvider'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 
 import { usePathname } from 'next/navigation'
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             </QueryProvider>
           </AuthProvider>
           <SpeedInsights />
+          <Analytics />
         </body>
       </html>
     )
@@ -63,6 +65,7 @@ export default function RootLayout({
           </QueryProvider>
         </AuthProvider>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )
