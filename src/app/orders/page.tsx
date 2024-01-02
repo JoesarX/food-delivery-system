@@ -39,7 +39,7 @@ const OrdersPage = () => {
             };
             fetchData();
         }
-    }, [status, router, session]);
+    }, [status, router, session, apiUrl]);
 
 
 

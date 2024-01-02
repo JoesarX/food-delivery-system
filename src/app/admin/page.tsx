@@ -68,9 +68,7 @@ const AdminHome = () => {
 
     //* PUT Visibility and Featured
     const handleUpdateVisOrFeat = async (id: string, action: string, state: boolean) => {
-        console.log(`${apiUrl}/products/${id}`);
         const body = action === "visibility" ? { isVisible: state } : { isFeatured: state };
-        console.log(`${apiUrl}/products/${id}`)
         const res = await fetch(`${apiUrl}/products/${id}`, {
             method: "PUT",
             body: JSON.stringify({
@@ -136,7 +134,6 @@ const AdminHome = () => {
 
     //* Delete Product
     const handleProductDelete = async (id: string) => {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${apiUrl}/products/${id}`, { method: "DELETE" })
         if (res.ok) {
             toast.success("Producto eleminado con exito.")

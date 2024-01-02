@@ -108,7 +108,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             }
         };
         fetchData();
-    }, [id]);
+    }, [id, apiUrl,inputs]);
 
 
     if (status === "loading") {
