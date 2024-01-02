@@ -2,8 +2,6 @@ import { ProductType } from "@/types/types";
 import Image from "next/image";
 import React from "react";
 
-import productService from "@/services/productService";
-
 const getData = async () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${apiUrl}/products/featured`, {
