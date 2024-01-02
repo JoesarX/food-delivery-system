@@ -38,7 +38,7 @@ export type OrderType = {
 };
 
 export type CartItemType = {
-    id: number;
+    id: string;
     title: string;
     img?: string;
     price: number;
