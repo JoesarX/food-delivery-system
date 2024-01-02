@@ -2,9 +2,6 @@ import { MenuType, MenuTypeSimple } from "@/types/types";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import categoryService from "@/services/categoryService";
-
-
 
 const MenuPage = async () => {
 

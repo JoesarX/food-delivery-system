@@ -3,10 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-import productService from "@/services/productService";
-import { get } from "http";
-
-
 const getData = async (category: string) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const res = await fetch(`${apiUrl}/products/category?cat=${category}`, {

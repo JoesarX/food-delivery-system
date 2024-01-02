@@ -62,12 +62,12 @@ const AdminHome = () => {
     };
 
     //* Edit Product Redirect
-    const handleEditProductRedirect = (id:number) => {
+    const handleEditProductRedirect = (id:string) => {
         router.push(`/admin/edit-product/${id}`);
     };
 
     //* PUT Visibility and Featured
-    const handleUpdateVisOrFeat = async (id: number, action: string, state: boolean) => {
+    const handleUpdateVisOrFeat = async (id: string, action: string, state: boolean) => {
         console.log(`${apiUrl}/products/${id}`);
         const body = action === "visibility" ? { isVisible: state } : { isFeatured: state };
         console.log(`${apiUrl}/products/${id}`)
@@ -98,7 +98,7 @@ const AdminHome = () => {
         }
     }
 
-    const handleUpdateVisOrFeatModal = async (id: number, action: string, state: boolean) => {
+    const handleUpdateVisOrFeatModal = async (id: string, action: string, state: boolean) => {
         let titleText = "";
         let textText = "";
         if (action === "visibility" && state === false) {
@@ -135,7 +135,7 @@ const AdminHome = () => {
 
 
     //* Delete Product
-    const handleProductDelete = async (id: number) => {
+    const handleProductDelete = async (id: string) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${apiUrl}/products/${id}`, { method: "DELETE" })
         if (res.ok) {
@@ -148,7 +148,7 @@ const AdminHome = () => {
         }
     }
 
-    const handleProductDeleteModal = async (id: number) => {
+    const handleProductDeleteModal = async (id: string) => {
         Swal.fire({
             title: 'Esta seguro que quiere eliminar el producto?',
             text: "Una vez borrado, no se podra recuperar!",

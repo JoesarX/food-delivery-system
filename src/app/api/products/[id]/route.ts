@@ -12,8 +12,7 @@ export const GET = async (
     try {
         const product = await prisma.product.findUnique({
             where: {
-                //I need to give the id as a number, not as a string
-                id: Number(id),
+                id: id,
             },
         });
 
@@ -39,7 +38,7 @@ export const PUT = async (
         try {
             const body = await req.json(); 
             const updatedProduct = await prisma.product.update({
-                where: {id: Number(id) },
+                where: {id },
                 data: { ...body }, 
             });
 
@@ -76,7 +75,7 @@ export const DELETE = async (
         try {
             await prisma.product.delete({
                 where: {
-                    id: Number(id),
+                    id: id,
                 },
             });
 

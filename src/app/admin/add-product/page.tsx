@@ -11,9 +11,6 @@ import {
     faPlus
 } from "@fortawesome/free-solid-svg-icons";
 
-import categoryService from '@/services/categoryService';
-import productService from '@/services/productService';
-
 
 type Inputs = {
     title: string;
@@ -30,7 +27,7 @@ type Option = {
 
 const AddProductPage = () => {
     const { data: session, status } = useSession();
-     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const [inputs, setInputs] = useState<Inputs>({
         title: "",
@@ -195,33 +192,18 @@ const AddProductPage = () => {
                 }
             }
 
-            console.log(`apiUrl: ${apiUrl}/products/admin`)
-
-            const body2 = JSON.stringify({
-                img: '/temporary/p2.png',
-                id: 123132123132,
-                ...inputs,
-                // isFeatured: 0,
-                // isVisible: 1,
-                options,
-            });
-
-            console.log(body2);
-
             const res = await fetch(`${apiUrl}/products/admin`, {
                 method: "POST",
                 body: JSON.stringify({
                     img: '/temporary/p2.png',
                     ...inputs,
-                    id: 123132123132,
-                    // isFeatured: 0,
-                    // isVisible: 1,
                     options,
                 }),
             });
 
             const data = await res.json();
             if (!res.ok) {
+                console.log(`error in post: ${data.message}`)
                 toast.error(`Hubo un error al agregar el producto: ${data.message}`);
             } else {
                 router.push(`/admin`);

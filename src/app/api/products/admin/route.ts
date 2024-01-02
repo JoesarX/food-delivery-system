@@ -36,11 +36,8 @@ export const GET = async (req: NextRequest) => {
         { status: 403 }
     );
 };
-
 export const POST = async (req: NextRequest) => {
     const session = await getAuthSession();
-    console.log("is admin?", session?.user.isAdmin)
-    console.log("inside post")
     if (session?.user.isAdmin) {
         try {
             const body = await req.json();

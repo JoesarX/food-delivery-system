@@ -12,19 +12,13 @@ import {
     faPlus
 } from "@fortawesome/free-solid-svg-icons";
 
-import categoryService from "@/services/categoryService";
-import productService from "@/services/productService";
 
 type Inputs = {
     title: string | undefined;
     desc: string | undefined;
     price: number | undefined;
-};
-
-type Category = {
-    id: string;
-    title: string;
-    slug: string;
+    isVisible?: boolean | undefined;
+    isFeatured?: boolean | undefined;
 };
 
 type Option = {
@@ -33,6 +27,7 @@ type Option = {
 };
 
 const EditProductPage = ({ params }: { params: { id: string } }) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const { data: session, status } = useSession();
     const [isLoading, setIsLoading] = useState(true);
     const id = params.id;
@@ -41,6 +36,8 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
         title: undefined,
         desc: undefined,
         price: undefined,
+        isVisible: undefined,
+        isFeatured: undefined,
     });
 
     const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -53,35 +50,51 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
     const [options, setOptions] = useState<Option[]>([]);
     const [file, setFile] = useState<File>();
 
-    const [categories, setCategories] = useState<Category[]>([]);
+    const categories = ['Comida', 'Bebida', 'Otros'];
 
-    
+
 
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                //* Fetch categories
-                try {
-                    const data: Category[] = await categoryService.getAllCategoriesSlugs();
-                    console.log(`data: ${data}`);
-                    setCategories(data);
-                } catch (error) {
-                    console.log(error);
-                }
-
                 //* Fetch product details by ID
-                const productData: ProductType = await productService.getOneProduct(id);
+                const productRes = await fetch(`${apiUrl}/products/${id}`, {
+                    cache: "no-store"
+                });
+                if (!productRes.ok) {
+                    throw new Error("Failed to fetch product");
+                }
+                const productData: ProductType = await productRes.json();
+
                 console.log(`productData: ${productData}`);
                 console.log(productData);
+                let visible = productData.isVisible;
+                let featured = productData.isFeatured;
+
+                if (productData.isVisible) {
+                    visible= true;
+                } else {
+                    visible= false;
+                }
+                if (productData.isFeatured) {
+                    featured= true;
+                } else {
+                    featured= false;
+                }
 
                 // Populate the inputs state with product details
                 setInputs({
                     title: productData.title,
                     desc: productData.desc,
                     price: productData.price,
+                    isVisible: visible,
+                    isFeatured: featured,
                 });
+
+                console.log(`inputs:`)
+                console.log(inputs);
 
                 setSelectedCategory(productData.catSlug)
 
@@ -95,7 +108,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             }
         };
         fetchData();
-    }, [ id ]);
+    }, [id]);
 
 
     if (status === "loading") {
@@ -115,7 +128,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
     const handleCategorySelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCategory(e.target.value);
     };
-    
+
 
     // Function to check for duplicate option names
     const isValidOption = (title: string, additionalPrice: number) => {
@@ -196,7 +209,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             }
         }
 
-        if (selectedCategory=== "" || selectedCategory=== undefined || selectedCategory=== undefined) {
+        if (selectedCategory === "" || selectedCategory === undefined || selectedCategory === undefined) {
             toast.error("Se requiere una categoria.");
             return false;
         }
@@ -237,20 +250,23 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
 
             //change the price in case of empty and having options just so its not 0
             if (options.length > 0) {
-                if (inputs.price === undefined || inputs.price === 0 || inputs.price < 0 || inputs.price === null ||inputs.price === undefined || inputs.price.toString() === '') {
+                if (inputs.price === undefined || inputs.price === 0 || inputs.price < 0 || inputs.price === null || inputs.price === undefined || inputs.price.toString() === '') {
                     inputs.price = 99;
                 }
             }
-            const productEdited = {
-                img: '/temporary/p2.png',
-                ...inputs,
-                catSlug: selectedCategory,
-                options,
-            };
-            
-            const response = await productService.editProduct(id, productEdited);
-            if (response.status !== 200) {
-                toast.error(`Hubo un error al agregar el producto`);
+            const res = await fetch(`${apiUrl}/products/${id}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    img: '/temporary/p2.png',
+                    ...inputs,
+                    catSlug: selectedCategory,
+                    options,
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                toast.error(`Hubo un error al agregar el producto: ${data.message}`);
             } else {
                 router.push(`/admin`);
             }
@@ -336,8 +352,8 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                     >
                         <option value="">Seleccione una Categoria de Producto</option>
                         {categories.map((category) => (
-                            <option key={category.id} value={category.slug}>
-                                {category.title}
+                            <option key={category} value={category}>
+                                {category}
                             </option>
                         ))}
                     </select>

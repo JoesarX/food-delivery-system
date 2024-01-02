@@ -68,14 +68,14 @@ model Category {
 }
 
 model Product {
-  id         Int   @id 
+  id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
   title      String
   desc       String
   img        String?
   price      Decimal
-  isFeatured Boolean  @default(false)
-  isVisible  Boolean  @default(true)
+  isFeatured Boolean  
+  isVisible  Boolean  
   options    Json
   catSlug    String
   // sizes      ProductSizes[]
