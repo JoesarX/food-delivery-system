@@ -26,19 +26,13 @@ const CartIcon = () => {
     return (
         <Link href={session?.user.isAdmin ? "/add" : "/cart"}>
             <div className="flex items-center gap-4">
-                <div className="relative w-8 h-8 md:w-5 md:h-5">
-                    <Image
-                        src="/cart.png"
-                        alt=""
-                        fill
-                        sizes="100%"
-                        className="object-contain"
-                    />
+                <div className="relative w-6 h-8 md:w-2 md:h-5">
+                    <FontAwesomeIcon icon={faCartShopping} />
                 </div>
                 {session?.user.isAdmin ? (
-                    <button className="p-1 bg-blue-800 text-white rounded-md">Add product</button>
+                    <button className="p-1 bg-blue-800 text-white rounded-md">Agregar Producto</button>
                 ) : (
-                    <span>Cart ({totalItems})</span>
+                    <span>Carrito ({totalItems})</span>
                 )}
             </div>
         </Link>
