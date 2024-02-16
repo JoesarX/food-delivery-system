@@ -37,8 +37,8 @@ export const GET = async (req: NextRequest) => {
     );
 };
 export const POST = async (req: NextRequest) => {
-    // const session = await getAuthSession();
-    // if (session?.user.isAdmin) {
+    const session = await getAuthSession();
+    if (session?.user.isAdmin) {
         try {
             const body = await req.json();
             const product = await prisma.product.create({
@@ -52,7 +52,7 @@ export const POST = async (req: NextRequest) => {
                 { status: 500 }
             );
         }
-    //}
+    }
 
     return new NextResponse(
         JSON.stringify({ message: 'You are not allowed!' }),
