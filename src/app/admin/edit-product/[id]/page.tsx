@@ -68,8 +68,9 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 }
                 const productData: ProductType = await productRes.json();
 
-                console.log(`productData: ${productData}`);
-                console.log(productData);
+                // console.log(`productData: ${productData}`);
+                // console.log(productData);
+
                 let visible = productData.isVisible;
                 let featured = productData.isFeatured;
 
@@ -93,8 +94,8 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                     isFeatured: featured,
                 });
 
-                console.log(`inputs:`)
-                console.log(inputs);
+                // console.log(`inputs:`)
+                // console.log(inputs);
 
                 setSelectedCategory(productData.catSlug)
 
@@ -108,7 +109,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             }
         };
         fetchData();
-    }, [id, apiUrl,inputs]);
+    }, [id, apiUrl]);
 
 
     if (status === "loading") {

@@ -8,6 +8,8 @@ export const GET = async (req: NextRequest) => {
 
     if (session?.user.isAdmin) {
         try {
+            // prototype:
+            // const #nombreVariable = await prisma.#nombreTabla.findMany({
             const products = await prisma.product.findMany({
                 orderBy: [
                     {
@@ -44,6 +46,8 @@ export const POST = async (req: NextRequest) => {
             const product = await prisma.product.create({
                 data: body,
             });
+
+            
             return new NextResponse(JSON.stringify(product), { status: 201 });
         } catch (err) {
             console.log(err);

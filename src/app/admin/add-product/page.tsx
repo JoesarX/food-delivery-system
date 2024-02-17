@@ -17,6 +17,8 @@ type Inputs = {
     desc: string;
     price: number;
     catSlug: string;
+    isFeatured: boolean;
+    isVisible: boolean;
 };
 
 
@@ -34,6 +36,8 @@ const AddProductPage = () => {
         desc: "",
         price: 0,
         catSlug: "",
+        isFeatured: false,
+        isVisible: true,
     });
 
     const [option, setOption] = useState<Option>({
