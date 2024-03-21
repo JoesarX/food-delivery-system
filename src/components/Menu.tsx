@@ -9,11 +9,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
    faBars, faXmark
 } from "@fortawesome/free-solid-svg-icons";
+import { stat } from "fs";
 
 const links = [
    { id: 1, title: "Inicio", url: "/" },
    { id: 2, title: "Menu", url: "/menu" },
-   { id: 3, title: "Contactanos", url: "/" },
+   { id: 3, title: "Contactanos", url: "/contactanos" },
 ];
 
 const Menu = () => {
@@ -38,19 +39,29 @@ const Menu = () => {
                ))}
 
                {/* USER IS LOGGED IN OR NOT LINKS */}
-               {status === "authenticated" ? (
+               
+               {/*!ES SOLO POR AHORA PARA NO MOSTRAR ORDENES HASTA QUE SE IMPLEMENTE, UNA VEZ ESTE ORDENES REGRESAR A ESTA VERSION*/}
+               {/* {status === "authenticated" ? (
                   <Link href="/orders" onClick={() => setOpen(false)}>
                      Ordenes
                   </Link>
                ) : (
                   <Link href="/login" onClick={() => setOpen(false)}>
-                     Login
+                     Iniciar Sesión
                   </Link>
-               )}
+               )} */}
+
+               {/*!ES SOLO POR AHORA PARA NO MOSTRAR ORDENES HASTA QUE SE IMPLEMENTE, UNA VEZ ESTE ORDENES QUITAR A ESTA VERSION*/}
+               {status !== "authenticated" && (
+                  <Link href="/login" onClick={() => setOpen(false)}>
+                     Iniciar Sesión
+                  </Link>
+               )
+               }
 
                {/* Separate link so that it properly adds the links individually with proper spacing*/}
                {status === "authenticated" && (
-                  <div className="ml-4 cursor-pointer" onClick={() => signOut()}>Logout</div>
+                  <div className="ml-4 cursor-pointer" onClick={() => signOut()}>Cerrar Sesión</div>
                )}
 
                <Link href="/cart" onClick={() => setOpen(false)}>

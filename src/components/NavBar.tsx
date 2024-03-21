@@ -34,7 +34,7 @@ const NavBar = () => {
             <div className='hidden md:flex gap-4 flex-1'>
                 <Link href={"/"}>Inicio</Link>
                 <Link href={"/menu"}>Menu</Link>
-                <Link href={"/"}>Contacto</Link>
+                <Link href={"/contactanos"}>Contactanos</Link>
             </div>
             {/* LOGO */}
             <div className='text-xl md:font-bold flex-1 md:text-center'>
@@ -48,10 +48,10 @@ const NavBar = () => {
             </div>
             {/* RIGHT LINKS */}
             <div className='hidden md:flex gap-4 items-center justify-end flex-1'>
-                <div className='md:absolute top-3 r-2 2xl:static flex items-center gap-2 cursor-pointer bg-blue-200 px-1 rounded-md'>
+                {/* <div className='md:absolute top-3 r-2 2xl:static flex items-center gap-2 cursor-pointer bg-blue-200 px-1 rounded-md'>
                     <Image src="/phone.png" width={20} height={20} alt="" />
                     <span>3344-1221</span>
-                </div>
+                </div> */}
                 <UserLinks />
                 {/* <Link href={"/cart"}><FontAwesomeIcon icon={faCartShopping}/> Carrito(3)</Link> */}
                 { isAdmin ? (

@@ -327,8 +327,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 <div className="w-full flex flex-col gap-2 ">
                     <label className="text-base">Precio</label>
                     <input
-                        className={`ring-1 ring-blue-700 p-4 rounded-sm placeholder:text-slate-300 outline-none ${options.length > 0 ? 'bg-gray-200 text-gray-700' : 'bg-gray-50'
-                            }`}
+                        className={`ring-1 ring-blue-700 p-4 rounded-sm placeholder:text-slate-300 outline-none ${options.length > 0 ? 'bg-gray-200 text-gray-700' : 'bg-gray-50'}`}
                         type="text"
                         placeholder="29"
                         name="price"

@@ -81,25 +81,34 @@ const CartPage = () => {
                     <span className="">Subtotal ({totalItems} items)</span>
                     <span className="">${Number(totalPrice).toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                     <span className="">Service Cost</span>
                     <span className="">${Number(totalPrice * 0.034).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                     <span className="">Delivery Cost</span>
                     <span className="text-green-500">FREE!</span>
-                </div>
+                </div> */}
                 <hr className="my-2" />
                 <div className="flex justify-between">
                     <span className="">TOTAL(INCL. VAT)</span>
                     <span className="font-bold">${Number(totalPrice * 1.034).toFixed(2)}</span>
                 </div>
+                <p className="font-bold p-2">¡Estamos trabajando en que puedas ordenar en linea! Por ahora, visítanos en el local para hacer tus pedidos.</p>
                 <button
-                    className="bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end"
                     onClick={handleCheckout}
+                
+                    //TODO: COMMENTED OUT UNTIL THE FUNCTIONALITY IS IMPLEMENTED. UNCOMMENT WHEN READY
+                    //className={`bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end ${totalItems === 0 && 'opacity-40'} `}
+                    //disabled={totalItems === 0}
+                    
+                    //TODO: REMOVE THIS LINE WHEN THE FUNCTIONALITY IS IMPLEMENTED
+                    className={`bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end opacity-40 `}
+                    disabled={true}
                 >
-                    CHECKOUT
+                    ORDENAR
                 </button>
+                
             </div>
         </div>
     );

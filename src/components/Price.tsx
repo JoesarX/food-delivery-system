@@ -35,7 +35,7 @@ const Price = ({ product }: { product: ProductType }) => {
             }),
             quantity: quantity,
         })
-        toast.success("The product added to the cart!")
+        toast.success("Producto agregado al carrito!")
     }
 
     return (
