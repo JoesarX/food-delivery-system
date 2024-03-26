@@ -7,7 +7,7 @@ import { ProductType } from "@/types/types";
 export const GET = async (
     req: NextRequest,
     { params }: { params: { id: string } }) => {
-        
+
     const { id } = params;
     try {
         const product = await prisma.product.findUnique({
@@ -16,7 +16,9 @@ export const GET = async (
             },
         });
 
-        return new NextResponse(JSON.stringify(product), { status: 200 });
+        const response = new NextResponse(JSON.stringify(product), { status: 200 });
+        response.headers.set("Cache-Control", "no-store");
+        return response
     } catch (err) {
         console.log(err);
         return new NextResponse(
@@ -36,10 +38,10 @@ export const PUT = async (
 
     if (session?.user.isAdmin) {
         try {
-            const body = await req.json(); 
+            const body = await req.json();
             const updatedProduct = await prisma.product.update({
-                where: {id },
-                data: { ...body }, 
+                where: { id },
+                data: { ...body },
             });
 
             return new NextResponse(

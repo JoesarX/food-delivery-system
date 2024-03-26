@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest) => {
     try {
         const products = await prisma.$queryRaw`
             SELECT * 
-            FROM product 
+            FROM Product 
             WHERE isFeatured = true AND isVisible = true 
             ORDER BY 
                 CASE 

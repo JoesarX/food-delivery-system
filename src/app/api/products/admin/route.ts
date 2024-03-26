@@ -23,7 +23,9 @@ export const GET = async (req: NextRequest) => {
                     },
                 ]
             });
-            return new NextResponse(JSON.stringify(products), { status: 200 });
+            const response = new NextResponse(JSON.stringify(products), { status: 200 });
+            response.headers.set("Cache-Control", "no-store");
+            return response
         } catch (err) {
             console.log(err);
             return new NextResponse(
