@@ -42,6 +42,7 @@ export type CartItemType = {
     title: string;
     img?: string;
     price: number;
+    subtotal: number;
     optionTitle?: string;
     quantity: number;
 };

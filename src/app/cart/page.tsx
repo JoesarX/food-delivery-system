@@ -80,36 +80,40 @@ const CartPage = () => {
                             <span>{item.optionTitle}</span>
                         </div>
 
-                        {/* PRICE */}
-                        <div className="flex-shrink-0 mr-4">
-                            <span className="font-bold text-sm sm:text-lg">L. {Number(item.price).toFixed(2)}</span>
-                        </div>
-
-                        {/* QUANTITY */}
-                        <div className="flex justify-between p-3 ring-1 ring-blue-800 w-fit">
-                            <div className="flex gap-4 items-center">
-                                {item.quantity === 1 ? (
-                                    <button
-                                        onClick={() => removeFromCart(item)}
-                                    >
-                                        <FontAwesomeIcon icon={faTrashCan}/>
-                                    </button>
-                                ) : (
-                                    <button
-                                        onClick={() => minusOne(item)}
-                                    >
-                                        <FontAwesomeIcon icon={faMinus} />
-                                    </button>
-                                )}
-
-                                <span>{item.quantity}</span>
-                                <button
-                                    onClick={() => plusOne(item)}
-                                >
-                                    <FontAwesomeIcon icon={faPlus} />
-                                </button>
+                        <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 ">
+                            {/* PRICE */}
+                            <div className="flex-shrink-0 mr-4 w-full sm:w-auto text-right">
+                                <span className="font-bold text-sm sm:text-lg">L. {Number(item.price).toFixed(2)}</span>
                             </div>
+
+                            {/* QUANTITY */}
+                            <div className="flex justify-between p-1 sm:p-3 ring-1 ring-blue-800 w-fit">
+                                <div className="flex gap-4 items-center">
+                                    {item.quantity === 1 ? (
+                                        <button
+                                            onClick={() => removeFromCart(item)}
+                                        >
+                                            <FontAwesomeIcon icon={faTrashCan} />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => minusOne(item)}
+                                        >
+                                            <FontAwesomeIcon icon={faMinus} />
+                                        </button>
+                                    )}
+
+                                    <span>{item.quantity}</span>
+                                    <button
+                                        onClick={() => plusOne(item)}
+                                    >
+                                        <FontAwesomeIcon icon={faPlus} />
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
+
                     </div>
                 ))}
             </div>

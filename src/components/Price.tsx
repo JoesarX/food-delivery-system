@@ -29,7 +29,8 @@ const Price = ({ product }: { product: ProductType }) => {
             id: product.id,
             title: product.title,
             img: product.img,
-            price: (total*quantity),
+            price: (total),
+            subtotal: (total * quantity),
             ...(product.options?.length && {
                 optionTitle: product.options[selected].title,
             }),
