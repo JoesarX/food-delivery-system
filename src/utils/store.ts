@@ -2,6 +2,7 @@ import { ActionTypes, CartItemType, CartType } from "@/types/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+
 const INITIAL_STATE = {
     products: [],
     totalItems: 0,
@@ -19,35 +20,35 @@ export const useCartStore = create(
                 const uniqueIdentifier = item.optionTitle
                     ? `${item.id}-${item.optionTitle}`
                     : item.id;
-            
+
                 const productInState = products.find(
                     (product) => uniqueIdentifier === (product.optionTitle
                         ? `${product.id}-${product.optionTitle}`
                         : product.id)
                 );
-            
+
                 if (productInState) {
                     const updatedProducts = products.map((product) =>
                         uniqueIdentifier === (product.optionTitle
                             ? `${product.id}-${product.optionTitle}`
                             : product.id)
                             ? {
-                                ...product,
+                                ...item,
                                 quantity: item.quantity + product.quantity,
-                                subtotal: item.price * (item.quantity + product.quantity),
+                                subtotal: item.subtotal + product.subtotal,
                             }
                             : product
                     );
                     set((state) => ({
                         products: updatedProducts,
                         totalItems: state.totalItems + item.quantity,
-                        totalPrice: state.totalPrice + item.price * item.quantity,
+                        totalPrice: state.totalPrice + item.subtotal,
                     }));
                 } else {
                     set((state) => ({
-                        products: [...state.products, { ...item, subtotal: item.price * item.quantity }],
+                        products: [...state.products, item],
                         totalItems: state.totalItems + item.quantity,
-                        totalPrice: state.totalPrice + item.price * item.quantity,
+                        totalPrice: state.totalPrice + item.subtotal,
                     }));
                 }
             },
@@ -56,7 +57,7 @@ export const useCartStore = create(
                 const uniqueIdentifier = item.optionTitle
                     ? `${item.id}-${item.optionTitle}`
                     : item.id;
-            
+
                 set((state) => ({
                     products: state.products.filter((product) =>
                         uniqueIdentifier !== (product.optionTitle
@@ -71,7 +72,7 @@ export const useCartStore = create(
                 const uniqueIdentifier = item.optionTitle
                     ? `${item.id}-${item.optionTitle}`
                     : item.id;
-            
+
                 set((state) => ({
                     products: state.products.map((product) =>
                         uniqueIdentifier === (product.optionTitle
@@ -80,15 +81,14 @@ export const useCartStore = create(
                             ? {
                                 ...product,
                                 quantity: product.quantity + 1,
-                                subtotal: product.subtotal + item.subtotal/item.quantity,
+                                subtotal: product.subtotal + product.subtotal / product.quantity,
                             }
                             : product
                     ),
                     totalItems: state.totalItems + 1,
-                    totalPrice: state.totalPrice + item.subtotal/item.quantity,
+                    totalPrice: state.totalPrice + item.subtotal / item.quantity,
                 }));
             },
-            
             minusOne(item) {
                 const uniqueIdentifier = item.optionTitle
                     ? `${item.id}-${item.optionTitle}`
@@ -102,7 +102,7 @@ export const useCartStore = create(
                             ? {
                                 ...product,
                                 quantity: product.quantity - 1,
-                                subtotal: product.subtotal - item.price,
+                                subtotal: product.subtotal - product.subtotal / product.quantity,
                             }
                             : product
                     );
@@ -110,10 +110,11 @@ export const useCartStore = create(
                     return {
                         products: updatedProducts.filter((product) => product.quantity > 0),
                         totalItems: state.totalItems - 1,
-                        totalPrice: state.totalPrice - item.price,
+                        totalPrice: state.totalPrice - item.subtotal / item.quantity,
                     };
                 });
             },
+            
         }),
         { name: "cart", skipHydration: true }
     )

@@ -60,7 +60,7 @@ const CartPage = () => {
     return (
         <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-blue-800 lg:flex-row">
             {/* PRODUCTS CONTAINER */}
-            <div className="h-1/2 p-4 flex flex-col justify-center overflow-scroll lg:h-full lg:w-2/3 2xl:w-3/5 lg:px-10 xl:px-20 2xl:px-40">
+            <div className="h-1/2 p-4 flex flex-col justify-center overflow-scroll lg:h-full lg:w-2/3 2xl:w-3/5 lg:px-10 xl:px-20 2xl:px-28">
                 {/* SINGLE ITEM */}
                 {products.map((item) => (
                     <div className="flex items-center justify-between mb-4" key={item.id}>
@@ -90,23 +90,16 @@ const CartPage = () => {
                             <div className="flex justify-between p-1 sm:p-3 ring-1 ring-blue-800 w-fit">
                                 <div className="flex gap-4 items-center">
                                     {item.quantity === 1 ? (
-                                        <button
-                                            onClick={() => removeFromCart(item)}
-                                        >
+                                        <button onClick={() => removeFromCart(item)}>
                                             <FontAwesomeIcon icon={faTrashCan} />
                                         </button>
                                     ) : (
-                                        <button
-                                            onClick={() => minusOne(item)}
-                                        >
+                                        <button onClick={() => minusOne(item)}>
                                             <FontAwesomeIcon icon={faMinus} />
                                         </button>
                                     )}
-
-                                    <span>{item.quantity}</span>
-                                    <button
-                                        onClick={() => plusOne(item)}
-                                    >
+                                    <span className=" w-5 sm:w-6 text-center">{item.quantity}</span>
+                                    <button onClick={() => plusOne(item)}>
                                         <FontAwesomeIcon icon={faPlus} />
                                     </button>
                                 </div>
