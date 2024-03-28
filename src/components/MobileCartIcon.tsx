@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 
-const MobileCartIcon = () => {
+const CartIcon = () => {
     const { data: session, status } = useSession();
 
     const { totalItems } = useCartStore();
@@ -24,18 +24,19 @@ const MobileCartIcon = () => {
         useCartStore.persist.rehydrate()
     }, [])
     return (
-        <Link href="/cart">
-            <div className="flex items-center md:gap-4">
-                <div className="relative w-6 h-6 md:w-2 md:h-5">
+        <Link href={session?.user.isAdmin ? "/add" : "/cart"}>
+            <div className="flex items-center gap-4">
+                <div className="relative w-6 h-8 md:w-2 md:h-5">
                     <FontAwesomeIcon icon={faCartShopping} />
                 </div>
-                <span>
-                    <span className="hidden md:inline">Carrito ({totalItems})</span>
-                    <span className="md:hidden">({totalItems})</span>
-                </span>
+                {session?.user.isAdmin ? (
+                    <button className="p-1 bg-blue-800 text-white rounded-md">Agregar Producto</button>
+                ) : (
+                    <span>Carrito ({totalItems})</span>
+                )}
             </div>
         </Link>
     );
 };
 
-export default MobileCartIcon;
+export default CartIcon;

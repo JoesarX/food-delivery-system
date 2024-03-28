@@ -4,6 +4,11 @@ import { ProductType } from "@/types/types";
 import { useCartStore } from "@/utils/store";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faPlus,
+    faMinus
+} from "@fortawesome/free-solid-svg-icons";
 
 const Price = ({ product }: { product: ProductType }) => {
     const [total, setTotal] = useState(product.price);
@@ -48,10 +53,10 @@ const Price = ({ product }: { product: ProductType }) => {
                     product.options?.map((option, index) => (
                         <button
                             key={option.title}
-                            className="min-w-[6rem] p-2 ring-1 ring-blue-400 rounded-md"
+                            className="min-w-[6rem] p-2 ring-1 ring-blue-800 rounded-md"
                             style={{
-                                background: selected === index ? "rgb(113 113 248)" : "white",
-                                color: selected === index ? "white" : "blue",
+                                background: selected === index ? "rgb(30,64,175)" : "white",
+                                color: selected === index ? "white" : "rgb(30,64,175)",
                             }}
                             onClick={() => setSelected(index)}
                         >
@@ -65,16 +70,12 @@ const Price = ({ product }: { product: ProductType }) => {
                 <div className="flex justify-between w-full p-3 ring-1 ring-blue-800">
                     <span>Cantidad</span>
                     <div className="flex gap-4 items-center">
-                        <button
-                            onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}
-                        >
-                            {"<"}
+                        <button onClick={() => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))}>
+                            <FontAwesomeIcon icon={faMinus} />
                         </button>
-                        <span>{quantity}</span>
-                        <button
-                            onClick={() => setQuantity((prev) => (prev < 9 ? prev + 1 : 9))}
-                        >
-                            {">"}
+                        <span className=" w-5 sm:w-6 text-center font-bold">{quantity}</span>
+                        <button onClick={() => setQuantity((prev) => (prev < 99 ? prev + 1 : 99))}>
+                        <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </div>
                 </div>

@@ -16,7 +16,7 @@ const data =  [
     {
         id: 3,
         title: "mas de 50 años de historia alimentando familias",
-        image: "/tonelesSlider3.jpeg",
+        image: "/tonelesSlider3.jpg",
     },
 ];
 

@@ -129,7 +129,7 @@ const AddProductPage = () => {
         } else if (inputs.desc.length < 10) {
             toast.warning("Le recomendamos que la Descripcion sea mas larga.");
             return false;
-        } else if (inputs.desc.length > 200) {
+        } else if (inputs.desc.length > 300) {
             toast.warning("Le recomendamos que la Descripcion sea mas corta.");
             return false;
         }
@@ -142,10 +142,10 @@ const AddProductPage = () => {
                 toast.error("Se requiere un Precio.");
                 return false;
             } else if (inputs.price > 200) {
-                toast.warning("Le recomendamos que el Precio sea mas corto.");
+                toast.warning("Le recomendamos que el Precio sea mas bajo para un solo producto.");
                 return false;
             } else if (inputs.price < 3) {
-                toast.warning("Le recomendamos que el Precio sea mas largo.");
+                toast.warning("Le recomendamos que el Precio sea mas alto.");
                 return false;
             }
         }
@@ -210,7 +210,7 @@ const AddProductPage = () => {
                 console.log(`error in post: ${data.message}`)
                 toast.error(`Hubo un error al agregar el producto: ${data.message}`);
             } else {
-                router.push(`/admin`);
+                router.push(`/admin/products`);
             }
 
         } catch (err) {

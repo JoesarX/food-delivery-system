@@ -1,72 +1,129 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import CartIcon from "./CartIcon";
+import MobileCartIcon from "./MobileCartIcon";
 import { signOut, useSession } from "next-auth/react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-   faBars, faXmark
+   faBars,
+   faXmark,
+   faHouse,
+   faUtensils,
+   faPhone,
+   faUser,
+   faUserSlash,
+   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
-import { stat } from "fs";
 
 const links = [
-   { id: 1, title: "Inicio", url: "/" },
-   { id: 2, title: "Menu", url: "/menu" },
-   { id: 3, title: "Contactanos", url: "/contactanos" },
+   { id: 1, title: "Inicio", url: "/", icon: faHouse },
+   { id: 2, title: "Menu", url: "/menu", icon: faUtensils },
+   { id: 3, title: "Contactanos", url: "/contactanos", icon: faPhone },
 ];
 
 const Menu = () => {
-   const [open, setOpen] = useState(false);
-   const { status } = useSession();
+   const [isOpen, setIsOpen] = useState(false);
+   const { data: session, status } = useSession();
+   const isAdmin = session?.user.isAdmin;
+
+   const toggleMenu = () => {
+      setIsOpen(!isOpen);
+   };
+
+   const closeMenu = () => {
+      setIsOpen(false);
+   };
+
+   useEffect(() => {
+      const handleOutsideClick = (event: MouseEvent) => {
+         const target = event.target as HTMLElement;
+         if (isOpen && !target.closest(".menu-container")) {
+            closeMenu();
+         }
+      };
+
+      if (isOpen) {
+         document.addEventListener("click", handleOutsideClick);
+      }
+
+      return () => {
+         document.removeEventListener("click", handleOutsideClick);
+      };
+   }, [isOpen]);
 
    return (
       <div>
-         {/* CHANGING ICONS */}
          <FontAwesomeIcon
-            icon={open ? faXmark : faBars}
-            onClick={() => setOpen(!open)}
-            className="cursor-pointer text-2xl"
+            icon={isOpen ? faXmark : faBars}
+            onClick={toggleMenu}
+            className="cursor-pointer text-xl"
          />
-
-         {open && (
-            <div className="bg-blue-800 text-white absolute left-0 top-24 w-full h-[calc(100vh-6rem)] flex flex-col gap-8 items-center justify-center text-3xl z-10">
+         {isOpen && (
+            <div
+               className="fixed inset-y-0 left-0 z-50 w-72 bg-blue-800 text-white flex flex-col gap-8 pl-10 pt-10 items-left justify-start text-xl menu-container"
+            >
+               <div className="w-full flex justify-end pr-4">
+                  <FontAwesomeIcon
+                     icon={faXmark}
+                     onClick={closeMenu}
+                     className="cursor-pointer"
+                  />
+               </div>
                {links.map((item) => (
-                  <Link href={item.url} key={item.id} onClick={() => setOpen(false)}>
+                  <Link href={item.url} key={item.id} onClick={closeMenu}>
+                     <FontAwesomeIcon
+                        icon={item.icon}
+                        className="cursor-pointer pr-4 w-6"
+                     />
                      {item.title}
                   </Link>
                ))}
-
                {/* USER IS LOGGED IN OR NOT LINKS */}
-               
                {/*!ES SOLO POR AHORA PARA NO MOSTRAR ORDENES HASTA QUE SE IMPLEMENTE, UNA VEZ ESTE ORDENES REGRESAR A ESTA VERSION*/}
                {/* {status === "authenticated" ? (
-                  <Link href="/orders" onClick={() => setOpen(false)}>
-                     Ordenes
-                  </Link>
-               ) : (
-                  <Link href="/login" onClick={() => setOpen(false)}>
-                     Iniciar Sesión
-                  </Link>
-               )} */}
-
+            <Link href="/orders" onClick={closeMenu}>
+              Ordenes
+            </Link>
+          ) : (
+            <Link href="/login" onClick={closeMenu}>
+              Iniciar Sesión
+            </Link>
+          )} */}
                {/*!ES SOLO POR AHORA PARA NO MOSTRAR ORDENES HASTA QUE SE IMPLEMENTE, UNA VEZ ESTE ORDENES QUITAR A ESTA VERSION*/}
                {status !== "authenticated" && (
-                  <Link href="/login" onClick={() => setOpen(false)}>
+                  <Link href="/login" onClick={closeMenu}>
+                     <FontAwesomeIcon
+                        icon={faUser}
+                        className="cursor-pointer pr-4 w-6"
+                     />
                      Iniciar Sesión
                   </Link>
-               )
-               }
-
+               )}
                {/* Separate link so that it properly adds the links individually with proper spacing*/}
                {status === "authenticated" && (
-                  <div className="ml-4 cursor-pointer" onClick={() => signOut()}>Cerrar Sesión</div>
+                  <div className="cursor-pointer" onClick={() => signOut()}>
+                     <FontAwesomeIcon
+                        icon={faUserSlash}
+                        className="cursor-pointer pr-4 w-6"
+                     />
+                     Cerrar Sesión
+                  </div>
                )}
-
-               <Link href="/cart" onClick={() => setOpen(false)}>
-                  <CartIcon />
-               </Link>
+               <div>
+                  {isAdmin ? (
+                     <Link href={"/admin/products"} className="font-bold">
+                        <FontAwesomeIcon
+                           icon={faWrench}
+                           className="cursor-pointer pr-4 w-6"
+                        />
+                        ADMIN
+                     </Link>
+                  ) : (
+                     <Link href="/cart" onClick={closeMenu}>
+                        <MobileCartIcon />
+                     </Link>
+                  )}
+               </div>
             </div>
          )}
       </div>
