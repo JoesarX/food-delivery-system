@@ -65,7 +65,7 @@ const NavBar = () => {
             {/* MOBILE MENU */}
             <div className='flex md:hidden w-full items-center justify-between'>
                 {/* HAMBURGER MENU */}
-                <div className='flex-1'>
+                <div className='flex-1 ml-2 '>
                     <Menu />
                 </div>
 
