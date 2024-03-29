@@ -1,16 +1,26 @@
-"use client";
+"use client"
 import { useCartStore } from "@/utils/store";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useMediaQuery } from "@react-hook/media-query";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faTrashCan,
+    faPlus,
+    faMinus
+} from "@fortawesome/free-solid-svg-icons";
 
 const CartPage = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const { products, totalItems, totalPrice, removeFromCart, clearCart } = useCartStore();
+    const { products, totalItems, totalPrice, removeFromCart, clearCart, minusOne, plusOne } = useCartStore();
     const { data: session } = useSession();
     const router = useRouter();
+    const isMobile = useMediaQuery("(max-width: 639px)");
+
+    const serviceFee = 0.035;
 
     useEffect(() => {
         useCartStore.persist.rehydrate();
@@ -50,56 +60,92 @@ const CartPage = () => {
     };
 
     return (
-        <div className="h-[calc(100vh-6rem)] md:h-[calc(100vh-9rem)] flex flex-col text-blue-800 lg:flex-row">
+        <div className="flex flex-col lg:flex-row h-full text-blue-800">
             {/* PRODUCTS CONTAINER */}
-            <div className="h-1/2 p-4 flex flex-col justify-center overflow-scroll lg:h-full lg:w-2/3 2xl:w-1/2 lg:px-20 xl:px-40">
+            <div className="flex-grow overflow-x-auto overflow-y-auto h-[calc(100vh-22rem)] lg:h-[calc(100vh-14rem)] px-4 pt-4 pb-[70px] md:pb-4 sm:pt-8 md:pt-12 lg:pt-0 lg:px-10 xl:px-20 2xl:px-28">
                 {/* SINGLE ITEM */}
                 {products.map((item) => (
-                    <div className="flex items-center justify-between mb-4" key={item.id}>
+                    <div className="flex items-center justify-between mb-4" key={`${item.id}${item.optionTitle ? `-${item.optionTitle}` : ''}`}>
+                        
+
+                        {/* IMAGE */}
                         {item.img && (
-                            <Image src={item.img} alt="" width={100} height={100} />
+                            <div className="flex-shrink-0 mr-4">
+                                <Image src={item.img} alt="" width={isMobile ? 50 : 100} height={isMobile ? 50 : 100} />
+                            </div>
                         )}
-                        <div className="">
-                            <h1 className="uppercase text-xl font-bold">
-                                {item.title} x{item.quantity}
+
+                        {/* TITLE */}
+                        <div className="flex-grow">
+                            <h1 className="uppercase text-sm md:text-xl font-bold ">
+                                {item.title}
                             </h1>
                             <span>{item.optionTitle}</span>
                         </div>
-                        <h2 className="font-bold">${item.price}</h2>
-                        <span
-                            className="cursor-pointer"
-                            onClick={() => removeFromCart(item)}
-                        >
-                            X
-                        </span>
+
+                        <div className="flex flex-col md:flex-row items-center gap-1 sm:gap-4 ">
+                            {/* PRICE */}
+                            <div className="flex-shrink-0 mr-4 w-full sm:w-auto text-right">
+                                <span className="font-bold text-sm sm:text-lg">L. {Number(item.price).toFixed(2)}</span>
+                            </div>
+
+                            {/* QUANTITY */}
+                            <div className="flex justify-between p-1 sm:p-3 ring-1 ring-blue-800 w-fit">
+                                <div className="flex gap-4 items-center">
+                                    {item.quantity === 1 ? (
+                                        <button onClick={() => removeFromCart(item)}>
+                                            <FontAwesomeIcon icon={faTrashCan} />
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => minusOne(item)}>
+                                            <FontAwesomeIcon icon={faMinus} />
+                                        </button>
+                                    )}
+                                    <span className=" w-5 sm:w-6 text-center">{item.quantity}</span>
+                                    <button onClick={() => plusOne(item)}>
+                                        <FontAwesomeIcon icon={faPlus} />
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
                 ))}
             </div>
+
             {/* PAYMENT CONTAINER */}
-            <div className="h-1/2 p-4 bg-sky-50 flex flex-col gap-4 justify-center lg:h-full lg:w-1/3 2xl:w-1/2 lg:px-15 xl:px-30 2xl:text-xl 2xl:gap-6">
+            <div className="bg-sky-50 flex flex-col justify-center p-4 lg:w-1/3 md:text-lg xl:text-xl h-[250px] lg:h-[calc(100vh-14rem)]  lg:gap-4 lg:px-15 xl:px-30 2xl:w-2/5 2xl:gap-6 fixed bottom-0 left-0 right-0  lg:static">
                 <div className="flex justify-between">
                     <span className="">Subtotal ({totalItems} items)</span>
-                    <span className="">${Number(totalPrice).toFixed(2)}</span>
+                    <span className="">L. {Number(totalPrice).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                    <span className="">Service Cost</span>
-                    <span className="">${Number(totalPrice * 0.034).toFixed(2)}</span>
+                    <span className="">Coste Servicio</span>
+                    <span className="">L. {Number(totalPrice * serviceFee).toFixed(0)}</span>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                     <span className="">Delivery Cost</span>
                     <span className="text-green-500">FREE!</span>
-                </div>
+                </div> */}
                 <hr className="my-2" />
                 <div className="flex justify-between">
                     <span className="">TOTAL(INCL. VAT)</span>
-                    <span className="font-bold">${Number(totalPrice * 1.034).toFixed(2)}</span>
+                    <span className="font-bold">L. {Number(totalPrice + (Number((totalPrice * serviceFee).toFixed(0)))).toFixed(2)}</span>
                 </div>
+                <p className="font-bold p-1 justify-center al">¡Estamos trabajando en que puedas ordenar en linea! Por ahora, visítanos en el local para hacer tus pedidos.</p>
                 <button
-                    className="bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end"
                     onClick={handleCheckout}
+                    //TODO: COMMENTED OUT UNTIL THE FUNCTIONALITY IS IMPLEMENTED. UNCOMMENT WHEN READY
+                    //className={`bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end ${totalItems === 0 && 'opacity-40'} `}
+                    //disabled={totalItems === 0}
+                    //TODO: REMOVE THIS LINE WHEN THE FUNCTIONALITY IS IMPLEMENTED
+                    className={`bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 mx-auto self-end opacity-40 mt-3`}
+                    disabled={true}
                 >
-                    CHECKOUT
+                    ORDENAR
                 </button>
+
             </div>
         </div>
     );

@@ -42,6 +42,7 @@ export type CartItemType = {
     title: string;
     img?: string;
     price: number;
+    subtotal: number;
     optionTitle?: string;
     quantity: number;
 };
@@ -56,4 +57,6 @@ export type ActionTypes = {
     addToCart: (item: CartItemType) => void;
     removeFromCart: (item: CartItemType) => void;
     clearCart: () => void;
+    plusOne: (item: CartItemType) => void;
+    minusOne: (item: CartItemType) => void;
 }

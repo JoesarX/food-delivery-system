@@ -9,7 +9,7 @@ export default function Home() {
     <main>
       <Slider />
       <Featured />
-      <Offer />
+      {/* <Offer /> */}
     </main>
   )
 }

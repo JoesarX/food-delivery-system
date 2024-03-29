@@ -30,10 +30,10 @@ const DeleteButton = ({id}: {id: number}) => {
         const res = await fetch(`${apiUrl}products/${id}`,{method:"DELETE"})
         if(res.ok){
             router.push("/menu")
-            toast.success("Product deleted successfully")
+            toast.success("Producto eliminado exitosamente!")
         }else{
             const data = await res.json()
-            toast.error("Failed to delete product")
+            toast.error("Hubo un error al eliminar el producto. Por favor intente mas tarde.")
             toast.error(data.message)
         }
     }

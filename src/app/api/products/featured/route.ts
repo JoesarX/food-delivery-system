@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest) => {
     try {
         const products = await prisma.$queryRaw`
             SELECT * 
-            FROM product 
+            FROM Product 
             WHERE isFeatured = true AND isVisible = true 
             ORDER BY 
                 CASE 
@@ -17,8 +17,10 @@ export const GET = async (req: NextRequest) => {
                 END,
                 title ASC
         `;
-        
-        return new NextResponse(JSON.stringify(products), { status: 200 });
+        const response = new NextResponse(JSON.stringify(products), { status: 200 });
+        response.headers.set("Cache-Control", "no-store");
+        return response;
+
     } catch (err) {
         console.log(err);
         return new NextResponse(

@@ -5,6 +5,7 @@ import React from "react";
 
 const getData = async (category: string) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    console.log(apiUrl)
     const res = await fetch(`${apiUrl}/products/category?cat=${category}`, {
         cache: "no-store"
     })

@@ -189,7 +189,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
         } else if (inputs.desc.length < 10) {
             toast.warning("Le recomendamos que la Descripcion sea mas larga.");
             return false;
-        } else if (inputs.desc.length > 200) {
+        } else if (inputs.desc.length > 300) {
             toast.warning("Le recomendamos que la Descripcion sea mas corta.");
             return false;
         }
@@ -202,10 +202,10 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 toast.error("Se requiere un Precio.");
                 return false;
             } else if (inputs.price > 200) {
-                toast.warning("Le recomendamos que el Precio sea mas corto.");
+                toast.warning("Le recomendamos que el Precio sea mas bajo para un solo producto.");
                 return false;
             } else if (inputs.price < 3) {
-                toast.warning("Le recomendamos que el Precio sea mas largo.");
+                toast.warning("Le recomendamos que el Precio sea mas alto.");
                 return false;
             }
         }
@@ -269,7 +269,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             if (!res.ok) {
                 toast.error(`Hubo un error al agregar el producto: ${data.message}`);
             } else {
-                router.push(`/admin`);
+                router.push(`/admin/products`);
             }
         } catch (err) {
             console.log(err);
@@ -327,8 +327,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 <div className="w-full flex flex-col gap-2 ">
                     <label className="text-base">Precio</label>
                     <input
-                        className={`ring-1 ring-blue-700 p-4 rounded-sm placeholder:text-slate-300 outline-none ${options.length > 0 ? 'bg-gray-200 text-gray-700' : 'bg-gray-50'
-                            }`}
+                        className={`ring-1 ring-blue-700 p-4 rounded-sm placeholder:text-slate-300 outline-none ${options.length > 0 ? 'bg-gray-200 text-gray-700' : 'bg-gray-50'}`}
                         type="text"
                         placeholder="29"
                         name="price"

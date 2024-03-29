@@ -1,6 +1,7 @@
-import { ActionTypes, CartType } from "@/types/types";
+import { ActionTypes, CartItemType, CartType } from "@/types/types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+
 
 const INITIAL_STATE = {
     products: [],
@@ -34,24 +35,24 @@ export const useCartStore = create(
                             ? {
                                 ...item,
                                 quantity: item.quantity + product.quantity,
-                                price: item.price + product.price,
+                                subtotal: item.subtotal + product.subtotal,
                             }
                             : product
                     );
                     set((state) => ({
                         products: updatedProducts,
                         totalItems: state.totalItems + item.quantity,
-                        totalPrice: state.totalPrice + item.price,
+                        totalPrice: state.totalPrice + item.subtotal,
                     }));
                 } else {
                     set((state) => ({
                         products: [...state.products, item],
                         totalItems: state.totalItems + item.quantity,
-                        totalPrice: state.totalPrice + item.price,
+                        totalPrice: state.totalPrice + item.subtotal,
                     }));
                 }
             },
-            clearCart: () => set({ ...INITIAL_STATE }), 
+            clearCart: () => set({ ...INITIAL_STATE }),
             removeFromCart(item) {
                 const uniqueIdentifier = item.optionTitle
                     ? `${item.id}-${item.optionTitle}`
@@ -64,9 +65,56 @@ export const useCartStore = create(
                             : product.id)
                     ),
                     totalItems: state.totalItems - item.quantity,
-                    totalPrice: state.totalPrice - item.price,
+                    totalPrice: state.totalPrice - item.subtotal,
                 }));
             },
+            plusOne(item) {
+                const uniqueIdentifier = item.optionTitle
+                    ? `${item.id}-${item.optionTitle}`
+                    : item.id;
+
+                set((state) => ({
+                    products: state.products.map((product) =>
+                        uniqueIdentifier === (product.optionTitle
+                            ? `${product.id}-${product.optionTitle}`
+                            : product.id)
+                            ? {
+                                ...product,
+                                quantity: product.quantity + 1,
+                                subtotal: product.subtotal + product.subtotal / product.quantity,
+                            }
+                            : product
+                    ),
+                    totalItems: state.totalItems + 1,
+                    totalPrice: state.totalPrice + item.subtotal / item.quantity,
+                }));
+            },
+            minusOne(item) {
+                const uniqueIdentifier = item.optionTitle
+                    ? `${item.id}-${item.optionTitle}`
+                    : item.id;
+
+                set((state) => {
+                    const updatedProducts = state.products.map((product) =>
+                        uniqueIdentifier === (product.optionTitle
+                            ? `${product.id}-${product.optionTitle}`
+                            : product.id)
+                            ? {
+                                ...product,
+                                quantity: product.quantity - 1,
+                                subtotal: product.subtotal - product.subtotal / product.quantity,
+                            }
+                            : product
+                    );
+
+                    return {
+                        products: updatedProducts.filter((product) => product.quantity > 0),
+                        totalItems: state.totalItems - 1,
+                        totalPrice: state.totalPrice - item.subtotal / item.quantity,
+                    };
+                });
+            },
+            
         }),
         { name: "cart", skipHydration: true }
     )
