@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import Link from 'next/link'
-import Menu from './Menu'
+import Menu from './MobileMenu'
 import Image from 'next/image'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,7 +29,7 @@ const NavBar = () => {
     const isAdmin = session?.user.isAdmin;
 
     return (
-        <div className='h-12 text-blue-800 p-4 flex items-center justify-between border-b-2 border-b-blue-800 uppercase md:h-20 lg:px-8'>
+        <div className='h-16 text-blue-800 bg-white p-4 flex items-center justify-between border-b-2 border-b-blue-800 uppercase md:h-20 lg:px-8'>
             {/* DESKTOP MENU */}
             <div className='hidden md:flex w-full'>
                 {/* LEFT LINKS */}

@@ -62,7 +62,7 @@ const CartPage = () => {
     return (
         <div className="flex flex-col lg:flex-row h-full text-blue-800">
             {/* PRODUCTS CONTAINER */}
-            <div className="flex-grow overflow-x-auto overflow-y-auto h-[calc(100vh-22rem)] lg:h-[calc(100vh-14rem)] px-4 pt-4 pb-[70px] md:pb-4 sm:pt-8 md:pt-12 lg:pt-0 lg:px-10 xl:px-20 2xl:px-28">
+            <div className="flex-grow overflow-x-auto overflow-y-auto h-[calc(100vh-24rem)] lg:h-[calc(100vh-14rem)] px-4 pt-4 pb-[70px] md:pb-4 sm:pt-8 md:pt-12 lg:pt-0 lg:px-10 xl:px-20 2xl:px-28">
                 {/* SINGLE ITEM */}
                 {products.map((item) => (
                     <div className="flex items-center justify-between mb-4" key={`${item.id}${item.optionTitle ? `-${item.optionTitle}` : ''}`}>
