@@ -6,16 +6,17 @@ export const GET = async (req: NextRequest) => {
     try {
         const products = await prisma.$queryRaw`
             SELECT * 
-            FROM Product 
-            WHERE isFeatured = true AND isVisible = true 
+            FROM "Product" 
+            WHERE "Product"."isFeatured" = true AND "Product"."isVisible" = true 
             ORDER BY 
                 CASE 
-                    WHEN catSlug = 'Comida' THEN 1
-                    WHEN catSlug = 'Bebida' THEN 2
-                    WHEN catSlug = 'Otros' THEN 3
+                    WHEN "Product"."catSlug" = 'Comida' THEN 1
+                    WHEN "Product"."catSlug" = 'Bebida' THEN 2
+                    WHEN "Product"."catSlug" = 'Otros' THEN 3
                     ELSE 4
                 END,
-                title ASC
+                "Product"."title" ASC;
+
         `;
         const response = new NextResponse(JSON.stringify(products), { status: 200 });
         response.headers.set("Cache-Control", "no-store");

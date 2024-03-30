@@ -1,13 +1,19 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider = "prisma-client-js"
-}
+  generator client {
+    provider = "prisma-client-js"
+  }
+
+  // datasource db {
+  //   provider = "postgresql"
+  //   url      = env("DATABASE_URL")
+  // }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model Account {
@@ -57,17 +63,7 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Category {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now())
-  title     String
-  desc      String
-  color     String
-  img       String
-  slug      String    @unique
-}
-
-model Product {
+model Product{
   id         String   @id @default(cuid())
   createdAt  DateTime @default(now())
   title      String
@@ -76,27 +72,15 @@ model Product {
   price      Decimal
   isFeatured Boolean  
   isVisible  Boolean  
-  options    Json
+  options    Json[]
   catSlug    String
-  // sizes      ProductSizes[]
 }
-
-// model ProductSizes {
-//   id        String   @id @default(cuid())
-//   createdAt DateTime @default(now())
-//   title     String
-//   desc      String
-//   price     Decimal
-//   ingridients   Json[]
-//   product  Product @relation(fields: [productId], references: [id])
-//   productId   String
-// }
 
 model Orders {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   price     Decimal
-  products  Json
+  products  Json[]
   status    String
   intent_id String?  @unique
   user      User     @relation(fields: [userEmail], references: [email])
