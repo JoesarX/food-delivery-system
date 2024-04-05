@@ -41,6 +41,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
     });
 
     const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [img, setImg] = useState<string>("");
 
     const [option, setOption] = useState<Option>({
         title: "",
@@ -98,6 +99,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 // console.log(inputs);
 
                 setSelectedCategory(productData.catSlug)
+                setImg(productData.img? productData.img : '');
 
                 // Populate the options state with product options
                 setOptions(productData.options || []);
@@ -258,7 +260,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
             const res = await fetch(`${apiUrl}/products/${id}`, {
                 method: "PUT",
                 body: JSON.stringify({
-                    img: '/temporary/p2.png',
+                    img: img,
                     ...inputs,
                     catSlug: selectedCategory,
                     options,
