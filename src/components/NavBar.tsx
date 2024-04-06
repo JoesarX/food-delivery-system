@@ -53,9 +53,8 @@ const NavBar = () => {
                 </div> */}
 
                     <span className='flex'><UserLinks /></span>
-                    {/* <Link href={"/cart"}><FontAwesomeIcon icon={faCartShopping}/> Carrito(3)</Link> */}
                     {isAdmin ? (
-                        <Link href={"/admin/products    "}>Administracion</Link>
+                        <Link href={"/admin/products"}>Administracion</Link>
                     ) : (
                         <CartIcon />
                     )}

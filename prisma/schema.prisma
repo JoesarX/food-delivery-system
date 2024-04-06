@@ -52,7 +52,8 @@ model User {
   isAdmin       Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
-  Orders        Orders[]
+  orders        Orders[]
+  comments      Comment[]
 }
 
 model VerificationToken {
@@ -85,4 +86,15 @@ model Orders {
   intent_id String?  @unique
   user      User     @relation(fields: [userEmail], references: [email])
   userEmail String
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userEmail], references: [email])
+  userEmail   String
+  title       String
+  comment     String?
+  ratingWeb   Int
+  ratingFood  Int
 }

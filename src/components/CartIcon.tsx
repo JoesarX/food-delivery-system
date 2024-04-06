@@ -25,8 +25,8 @@ const MobileCartIcon = () => {
     }, [])
     return (
         <Link href="/cart">
-            <div className="flex items-center md:gap-4">
-                <div className="relative w-6 h-6 md:w-2 md:h-5">
+            <div className="flex items-center md:gap-3">
+                <div className="relative w-6 h-6 md:w-2 md:h-5 mb-[3px]">
                     <FontAwesomeIcon icon={faCartShopping} />
                 </div>
                 <span>

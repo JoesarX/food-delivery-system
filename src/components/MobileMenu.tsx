@@ -154,7 +154,8 @@ const Menu = () => {
                )}
 
                {/* ORDERS LINK */}
-               {status === "authenticated" && (
+               {/* UNCOMENT WHEN ORDERS PAGE IS READY */}
+               {/* {status === "authenticated" && (
                   <Link href="/orders" onClick={closeMenu}>
                      <FontAwesomeIcon
                         icon={faClockRotateLeft}
@@ -162,7 +163,7 @@ const Menu = () => {
                      />
                      Ordenes
                   </Link>
-               )}
+               )} */}
 
                {/*CONTACTANOS LINK */}
                <Link href={"/contactanos"} onClick={closeMenu}>

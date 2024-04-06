@@ -48,8 +48,9 @@ const Price = ({ product }: { product: ProductType }) => {
         <div className="flex flex-col gap-4">
             <h2 className="text-2xl font-bold">L. {total}</h2>
             {/* OPTIONS CONTAINER */}
-            <div className="flex gap-4">
-                {product.options?.length !== undefined && product.options?.length > 0 &&
+            <div className="flex flex-wrap gap-2">
+                {product.options?.length !== undefined &&
+                    product.options?.length > 0 &&
                     product.options?.map((option, index) => (
                         <button
                             key={option.title}
@@ -75,7 +76,7 @@ const Price = ({ product }: { product: ProductType }) => {
                         </button>
                         <span className=" w-5 sm:w-6 text-center font-bold">{quantity}</span>
                         <button onClick={() => setQuantity((prev) => (prev < 99 ? prev + 1 : 99))}>
-                        <FontAwesomeIcon icon={faPlus} />
+                            <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </div>
                 </div>

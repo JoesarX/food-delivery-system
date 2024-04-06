@@ -26,6 +26,14 @@ const CartPage = () => {
         useCartStore.persist.rehydrate();
     }, []);
 
+    const handleAddComment = async () => {
+        if (!session) {
+            router.push("/login");
+        } else {
+            router.push("/comentar")
+        }
+    }
+
     const handleCheckout = async () => {
         if (!session) {
             router.push("/login");
@@ -62,11 +70,11 @@ const CartPage = () => {
     return (
         <div className="flex flex-col lg:flex-row h-full text-blue-800">
             {/* PRODUCTS CONTAINER */}
-            <div className="flex-grow overflow-x-auto overflow-y-auto h-[calc(100vh-24rem)] lg:h-[calc(100vh-14rem)] px-4 pt-4 pb-[70px] md:pb-4 sm:pt-8 md:pt-12 lg:pt-0 lg:px-10 xl:px-20 2xl:px-28">
+            <div className="flex-grow overflow-x-auto overflow-y-auto h-[calc(100vh-23rem)] lg:h-[calc(100vh-14rem)] px-4 pt-4 pb-[70px] md:pb-4 sm:pt-8 md:pt-12 lg:pt-0 lg:px-10 xl:px-20 2xl:px-28">
                 {/* SINGLE ITEM */}
                 {products.map((item) => (
                     <div className="flex items-center justify-between mb-4" key={`${item.id}${item.optionTitle ? `-${item.optionTitle}` : ''}`}>
-                        
+
 
                         {/* IMAGE */}
                         {item.img && (
@@ -115,15 +123,19 @@ const CartPage = () => {
             </div>
 
             {/* PAYMENT CONTAINER */}
-            <div className="bg-sky-50 flex flex-col justify-center p-4 lg:w-1/3 md:text-lg xl:text-xl h-[250px] lg:h-[calc(100vh-14rem)]  lg:gap-4 lg:px-15 xl:px-30 2xl:w-2/5 2xl:gap-6 fixed bottom-0 left-0 right-0  lg:static">
+            <div className="bg-sky-50 flex flex-col justify-center p-4 lg:w-1/3 md:text-lg xl:text-xl h-[262px] lg:h-[calc(100vh-14rem)]  lg:gap-4 lg:px-15 xl:px-30 2xl:w-2/5 2xl:gap-6 fixed bottom-0 left-0 right-0  lg:static">
                 <div className="flex justify-between">
                     <span className="">Subtotal ({totalItems} items)</span>
                     <span className="">L. {Number(totalPrice).toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
+
+                {/* TODO: COMMENTED OUT UNTIL THE FUNCTIONALITY IS IMPLEMENTED. UNCOMMENT WHEN READY */}
+                {/* <div className="flex justify-between">
                     <span className="">Coste Servicio</span>
                     <span className="">L. {Number(totalPrice * serviceFee).toFixed(0)}</span>
-                </div>
+                </div> */}
+
+
                 {/* <div className="flex justify-between">
                     <span className="">Delivery Cost</span>
                     <span className="text-green-500">FREE!</span>
@@ -133,8 +145,8 @@ const CartPage = () => {
                     <span className="">TOTAL(INCL. VAT)</span>
                     <span className="font-bold">L. {Number(totalPrice + (Number((totalPrice * serviceFee).toFixed(0)))).toFixed(2)}</span>
                 </div>
-                <p className="font-bold p-1 justify-center al">¡Estamos trabajando en que puedas ordenar en linea! Por ahora, visítanos en el local para hacer tus pedidos.</p>
-                <button
+                <p className="font-bold p-1 justify-center text-sm sm:text-base">¡Estamos trabajando en que puedas ordenar en linea! Por ahora, visítanos en el local para hacer tus pedidos. Accede a tu cuenta y dejanos saber que piensas de nuestra nueva pagina y nuestra comida.</p>
+                {/* <button
                     onClick={handleCheckout}
                     //TODO: COMMENTED OUT UNTIL THE FUNCTIONALITY IS IMPLEMENTED. UNCOMMENT WHEN READY
                     //className={`bg-blue-800 text-white p-3 rounded-md w-1/2 lg:w-2/3 xl:w-1/2 self-end ${totalItems === 0 && 'opacity-40'} `}
@@ -144,7 +156,17 @@ const CartPage = () => {
                     disabled={true}
                 >
                     ORDENAR
+                </button> */}
+
+                {/* COMMENT BUTTON WHEN ORDENES IS FINISHED */}
+                <button
+                    onClick={handleAddComment}
+                    className={`bg-blue-800 text-white p-3 rounded-md w-2/3 lg:w-2/3 xl:w-1/2 mx-auto self-end mt-3`}
+                >
+                    DINOS QUE PIENSAS
                 </button>
+
+
 
             </div>
         </div>
