@@ -53,6 +53,16 @@ export type CartType = {
     totalPrice: number;
 };
 
+export type CommentType = {
+    id: string;
+    createdAt: Date;
+    userEmail: string;
+    title: string;
+    comment: string;
+    ratingWeb: number;
+    ratingFood: number;
+}
+
 export type ActionTypes = {
     addToCart: (item: CartItemType) => void;
     removeFromCart: (item: CartItemType) => void;

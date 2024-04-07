@@ -31,7 +31,7 @@ const links = [
          { id: 23, title: "Otros", url: "/menu/otros" },
       ],
    },
-   // { id: 3, title: "Contactanos", url: "/contactanos", icon: faPhone },
+   // { id: 3, title: "Contactanos", url: "/contact-us", icon: faPhone },
 ];
 
 const Menu = () => {
@@ -75,7 +75,7 @@ const Menu = () => {
          {isOpen && (
             <div className="fixed inset-y-0 left-0 z-50 w-72 bg-blue-800 text-white flex flex-col gap-8 pl-6 pt-4 items-left justify-start text-xl menu-container">
                <div className="">
-                  <div className="w-full flex flex-row justify-between pb-4 pr-6">
+                  <div className="w-full flex flex-row justify-between pb-[17px] pr-6">
                      <div className="" onClick={closeMenu}>
                         <FontAwesomeIcon icon={faX} className=" pr-2 cursor-pointer" />
                      </div>
@@ -166,7 +166,7 @@ const Menu = () => {
                )} */}
 
                {/*CONTACTANOS LINK */}
-               <Link href={"/contactanos"} onClick={closeMenu}>
+               <Link href={"/contact-us"} onClick={closeMenu}>
                   <FontAwesomeIcon
                      icon={faPhone}
                      className="cursor-pointer pr-4 w-6"

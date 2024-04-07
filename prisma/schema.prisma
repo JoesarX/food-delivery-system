@@ -94,7 +94,7 @@ model Comment {
   user        User     @relation(fields: [userEmail], references: [email])
   userEmail   String
   title       String
-  comment     String?
+  comment     String
   ratingWeb   Int
   ratingFood  Int
 }

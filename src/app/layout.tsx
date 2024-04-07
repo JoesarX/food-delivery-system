@@ -1,5 +1,6 @@
 "use client"
 import NavBar from '@/components/NavBar'
+import AdminNavBar from '@/components/AdminNavBar'
 import Footer from '@/components/Footer'
 import HomeShortcuts from '@/components/MenuShortcuts'
 import './globals.css'
@@ -36,9 +37,11 @@ export default function RootLayout({
           <AuthProvider>
             <QueryProvider>
               <div>
-                <NavBar />
+                <div className='sticky top-0 z-40'>
+                  <AdminNavBar />
+                </div>
                 {children}
-                <Footer />
+
                 <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
               </div>
             </QueryProvider>

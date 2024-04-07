@@ -45,7 +45,7 @@ const NewComment = () => {
 
             if (res.ok) {
                 toast.success("¡Tu comentario ha sido enviado!");
-                router.push(`/`);
+                //router.push(`/`);
                 
             } else {
                 const error = await res.json();

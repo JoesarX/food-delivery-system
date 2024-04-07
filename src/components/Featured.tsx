@@ -42,7 +42,7 @@ const Featured: React.FC = () => {
           >
             {/* IMAGE CONTAINER */}
             {item.img && (
-              <div className="relative flex-1 w-full hover:rotate-[60deg] transition-all duration-500">
+              <div className="relative flex-1 w-full hover:rotate-[20deg] transition-all duration-500">
                 <Image src={item.img} alt="food image" fill className="object-contain" />
               </div>
             )}

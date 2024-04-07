@@ -30,7 +30,7 @@ const CartPage = () => {
         if (!session) {
             router.push("/login");
         } else {
-            router.push("/comentar")
+            router.push("/feedback")
         }
     }
 
