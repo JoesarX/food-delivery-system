@@ -45,7 +45,7 @@ const Price = ({ product }: { product: ProductType }) => {
     }
 
     return (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 ">
             <h2 className="text-2xl font-bold">L. {total}</h2>
             {/* OPTIONS CONTAINER */}
             <div className="flex flex-wrap gap-2">
@@ -66,7 +66,7 @@ const Price = ({ product }: { product: ProductType }) => {
                     ))}
             </div>
             {/* QUANTITY AND ADD BUTTON CONTAINER */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center pb-3">
                 {/* QUANTITY */}
                 <div className="flex justify-between w-full p-3 ring-1 ring-blue-800">
                     <span>Cantidad</span>
