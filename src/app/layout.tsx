@@ -53,6 +53,30 @@ export default function RootLayout({
     )
   }
 
+  if (pathname.startsWith('/cart')) {
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          <AuthProvider>
+            <QueryProvider>
+              <div>
+                <div className='sticky top-0 z-40'>
+                  <NavBar />
+                  <HomeShortcuts />
+                </div>
+                {children}
+                {/* <Footer /> */}
+                <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+              </div>
+            </QueryProvider>
+          </AuthProvider>
+          <SpeedInsights />
+          <Analytics />
+        </body>
+      </html>
+    )
+  }
+
   return (
     <html lang="en">
       <body className={inter.className}>

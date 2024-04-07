@@ -70,10 +70,10 @@ const CartPage = () => {
     return (
         <div className="flex flex-col lg:flex-row h-full text-blue-800">
             {/* PRODUCTS CONTAINER */}
-            <div className="flex-grow overflow-x-auto overflow-y-auto h-[calc(100vh-23rem)] lg:h-[calc(100vh-14rem)] px-4 pt-4 pb-[70px] md:pb-4 sm:pt-8 md:pt-12 lg:pt-0 lg:px-10 xl:px-20 2xl:px-28">
+            <div className="flex-grow overflow-x-auto overflow-y-auto h-[calc(100vh-24rem)] lg:h-[calc(100vh-8rem)] px-4 pt-4 mt-2 md:mt-4 pb-[10px] md:pb-4 sm:pt-8 md:pt-12 lg:pt-3 lg:px-10 xl:px-20 2xl:px-28">
                 {/* SINGLE ITEM */}
                 {products.map((item) => (
-                    <div className="flex items-center justify-between mb-4" key={`${item.id}${item.optionTitle ? `-${item.optionTitle}` : ''}`}>
+                    <div className="flex items-center justify-between mb-4 md:mb-8" key={`${item.id}${item.optionTitle ? `-${item.optionTitle}` : ''}`}>
 
 
                         {/* IMAGE */}
@@ -98,7 +98,7 @@ const CartPage = () => {
                             </div>
 
                             {/* QUANTITY */}
-                            <div className="flex justify-between p-1 sm:p-3 ring-1 ring-blue-800 w-fit">
+                            <div className="flex justify-between p-1 md:p-3 ring-1 ring-blue-800 w-fit">
                                 <div className="flex gap-4 items-center">
                                     {item.quantity === 1 ? (
                                         <button onClick={() => removeFromCart(item)}>
@@ -109,7 +109,7 @@ const CartPage = () => {
                                             <FontAwesomeIcon icon={faMinus} />
                                         </button>
                                     )}
-                                    <span className=" w-5 sm:w-6 text-center">{item.quantity}</span>
+                                    <span className=" w-5 md:w-6 text-center">{item.quantity}</span>
                                     <button onClick={() => plusOne(item)}>
                                         <FontAwesomeIcon icon={faPlus} />
                                     </button>
@@ -123,7 +123,7 @@ const CartPage = () => {
             </div>
 
             {/* PAYMENT CONTAINER */}
-            <div className="bg-sky-50 flex flex-col justify-center p-4 lg:w-1/3 md:text-lg xl:text-xl h-[262px] lg:h-[calc(100vh-14rem)]  lg:gap-4 lg:px-15 xl:px-30 2xl:w-2/5 2xl:gap-6 fixed bottom-0 left-0 right-0  lg:static">
+            <div className="bg-sky-50 flex flex-col justify-center p-4 lg:w-1/3 md:text-lg xl:text-xl h-[262px] lg:h-[calc(100vh-121px)]  lg:gap-4 lg:px-15 xl:px-30 2xl:w-2/5 2xl:gap-6 sticky bottom-0 left-0 right-0  lg:static">
                 <div className="flex justify-between">
                     <span className="">Subtotal ({totalItems} items)</span>
                     <span className="">L. {Number(totalPrice).toFixed(2)}</span>
