@@ -58,7 +58,7 @@ const NewComment = () => {
     };
 
     return (
-        <div className="w-full sm:max-w-lg px-10 py-5 sm:pd-0 mx-auto mt-8 flex flex-col h-[calc(100vh-12rem)] lg:h-[calc(100vh-16rem)]">
+        <div className="w-full sm:max-w-lg px-10 py-5 sm:pd-0 mx-auto mt-8 flex flex-col h-auto lg:h-[calc(100vh-16rem)] overflow-scroll">
             <h1 className="text-3xl font-bold mb-6 text-blue-800">Deja tu comentario</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2">
                 <div className="mb-4">
