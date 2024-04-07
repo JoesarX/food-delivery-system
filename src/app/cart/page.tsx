@@ -123,7 +123,7 @@ const CartPage = () => {
             </div>
 
             {/* PAYMENT CONTAINER */}
-            <div className="bg-sky-50 flex flex-col justify-center p-4 lg:w-1/3 md:text-lg xl:text-xl h-[262px] lg:h-[calc(100vh-121px)]  lg:gap-4 lg:px-15 xl:px-30 2xl:w-2/5 2xl:gap-6 sticky bottom-0 left-0 right-0  lg:static">
+            <div className="bg-sky-50 flex flex-col justify-center p-4 lg:w-1/3 md:text-lg xl:text-xl h-[262px] lg:h-[calc(100vh-121px)]  lg:gap-4 lg:px-15 xl:px-30 2xl:w-2/5 2xl:gap-6 fixed bottom-0 left-0 right-0  lg:static">
                 <div className="flex justify-between">
                     <span className="">Subtotal ({totalItems} items)</span>
                     <span className="">L. {Number(totalPrice).toFixed(2)}</span>
