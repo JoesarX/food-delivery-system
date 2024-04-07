@@ -21,10 +21,10 @@ const SingleProductPage = async({params}:{params:{id:string}}) => {
     const singleProduct : ProductType = await getData(params.id);
     
     return (
-        <div className="p-4 lg:px-20 xl:px-40 h-[calc(100vh-2rem)]  md:h-[calc(100vh-14rem)] flex flex-col justify-around text-blue-800 md:flex-row md:gap-8 md:items-center relative">
+        <div className="p-4 lg:px-20 xl:px-40 h-[calc(100vh-10rem)] overflow-scroll md:h-[calc(100vh-14rem)] flex flex-col  text-blue-800 md:flex-row md:gap-8 md:items-center relative">
             {/* IMAGE CONTAINER */}
             {singleProduct.img && (
-                <div className="relative w-full h-1/3 md:h-[90%]">
+                <div className="relative py-16 w-full h-1/3 md:h-[90%]">
                     <Image
                         src={singleProduct.img}
                         alt=""
