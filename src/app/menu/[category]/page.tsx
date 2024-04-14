@@ -6,6 +6,8 @@ import React from "react";
 const getData = async (category: string) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     console.log(apiUrl)
+    console.log(`${apiUrl}/products/category?cat=${category}`)
+    category = category.charAt(0).toUpperCase() + category.slice(1);
     const res = await fetch(`${apiUrl}/products/category?cat=${category}`, {
         cache: "no-store"
     })
@@ -29,7 +31,7 @@ const CategoryPage = async ({ params }: Props) => {
     return (
         <div className="flex flex-wrap text-blue-800">
             {products.map((item) => (
-                <Link className="w-full h-[60vh] border-r-2 border-b-2 border-blue-800 sm:w-1/2 lg:w-1/3 p-4 flex flex-col justify-between group odd:bg-sky-50" href={`/product/${item.id}`} key={item.id}>
+                <Link className="w-full h-[40vh] border-r-2 border-b-2 border-blue-800 sm:w-1/2 lg:w-1/3 p-4 flex flex-col justify-between group odd:bg-sky-50" href={`/product/${item.id}`} key={item.id}>
                     {/* IMAGE CONTAINER */}
                     {item.img && (
                         <div className="relative h-[80%]">

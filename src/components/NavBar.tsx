@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import Link from 'next/link'
-import Menu from './Menu'
+import Menu from './MobileMenu'
 import Image from 'next/image'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,14 +29,14 @@ const NavBar = () => {
     const isAdmin = session?.user.isAdmin;
 
     return (
-        <div className='h-12 text-blue-800 p-4 flex items-center justify-between border-b-2 border-b-blue-800 uppercase md:h-20 lg:px-8'>
+        <div className='h-16 text-blue-800 bg-white p-4 flex items-center justify-between border-b-2 border-b-blue-800 uppercase lg:h-20 lg:px-8'>
             {/* DESKTOP MENU */}
-            <div className='hidden md:flex w-full'>
+            <div className='hidden lg:flex w-full'>
                 {/* LEFT LINKS */}
                 <div className='flex gap-4 flex-1'>
                     <Link href={"/"}>Inicio</Link>
                     <Link href={"/menu"}>Menu</Link>
-                    <Link href={"/contactanos"}>Contactanos</Link>
+                    <Link href={"/contact-us"}>Contactanos</Link>
                 </div>
                 {/* LOGO */}
                 <div className='text-xl font-bold flex-1 text-center'>
@@ -53,9 +53,8 @@ const NavBar = () => {
                 </div> */}
 
                     <span className='flex'><UserLinks /></span>
-                    {/* <Link href={"/cart"}><FontAwesomeIcon icon={faCartShopping}/> Carrito(3)</Link> */}
                     {isAdmin ? (
-                        <Link href={"/admin/products    "}>Administracion</Link>
+                        <Link href={"/admin/products"}>Administracion</Link>
                     ) : (
                         <CartIcon />
                     )}
@@ -63,7 +62,7 @@ const NavBar = () => {
             </div>
 
             {/* MOBILE MENU */}
-            <div className='flex md:hidden w-full items-center justify-between'>
+            <div className='flex lg:hidden w-full items-center justify-between'>
                 {/* HAMBURGER MENU */}
                 <div className='flex-1 ml-2 '>
                     <Menu />

@@ -58,12 +58,12 @@ const AdminHome = () => {
 
     //* Add Product Redirect
     const handleAddProductRedirect = () => {
-        router.push("/admin/add-product");
+        router.push("/admin/products/add-product");
     };
 
     //* Edit Product Redirect
     const handleEditProductRedirect = (id:string) => {
-        router.push(`/admin/edit-product/${id}`);
+        router.push(`/admin/products/edit-product/${id}`);
     };
 
     //* PUT Visibility and Featured

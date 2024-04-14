@@ -1,7 +1,8 @@
 "use client"
-import Notification from '@/components/Notification'
 import NavBar from '@/components/NavBar'
+import AdminNavBar from '@/components/AdminNavBar'
 import Footer from '@/components/Footer'
+import HomeShortcuts from '@/components/MenuShortcuts'
 import './globals.css'
 //import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -36,9 +37,35 @@ export default function RootLayout({
           <AuthProvider>
             <QueryProvider>
               <div>
-                <NavBar />
+                <div className='sticky top-0 z-40'>
+                  <AdminNavBar />
+                </div>
                 {children}
-                <Footer />
+
+                <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
+              </div>
+            </QueryProvider>
+          </AuthProvider>
+          <SpeedInsights />
+          <Analytics />
+        </body>
+      </html>
+    )
+  }
+
+  if (pathname.startsWith('/cart')) {
+    return (
+      <html lang="en">
+        <body className={inter.className}>
+          <AuthProvider>
+            <QueryProvider>
+              <div>
+                <div className='sticky top-0 z-40'>
+                  <NavBar />
+                  <HomeShortcuts />
+                </div>
+                {children}
+                {/* <Footer /> */}
                 <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
               </div>
             </QueryProvider>
@@ -56,8 +83,10 @@ export default function RootLayout({
         <AuthProvider>
           <QueryProvider>
             <div>
-              <Notification />
-              <NavBar />
+              <div className='sticky top-0 z-40'>
+                <NavBar />
+                <HomeShortcuts />
+              </div>
               {children}
               <Footer />
               <ToastContainer position="bottom-right" theme="dark" autoClose={3000} />
