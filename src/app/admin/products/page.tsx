@@ -62,7 +62,7 @@ const AdminHome = () => {
     };
 
     //* Edit Product Redirect
-    const handleEditProductRedirect = (id:string) => {
+    const handleEditProductRedirect = (id: string) => {
         router.push(`/admin/products/edit-product/${id}`);
     };
 
@@ -133,19 +133,37 @@ const AdminHome = () => {
 
 
     //* Delete Product
-    const handleProductDelete = async (id: string) => {
-        const res = await fetch(`${apiUrl}/products/${id}`, { method: "DELETE" })
-        if (res.ok) {
-            toast.success("Producto eleminado con exito.")
-            setIsProductsChanging(true);
-        } else {
-            const data = await res.json()
-            toast.error("Hubo un fallo al eliminar el producto.")
-            toast.error(data.message)
-        }
-    }
+    const handleProductDelete = async (id: string, imageUrl: string | undefined) => {
+        try {
+            // Delete the product from the database
+            const res = await fetch(`${apiUrl}/products/${id}`, {
+                method: "DELETE",
+            });
 
-    const handleProductDeleteModal = async (id: string) => {
+            if (res.ok && imageUrl) {
+                // If the product deletion is successful, delete the associated image
+                const imageRes = await fetch(`/api/images?url=${imageUrl}`, {
+                    method: "DELETE",
+                });
+
+                if (imageRes.ok) {
+                    toast.success("Producto eliminado con éxito.");
+                    setIsProductsChanging(true);
+                } else {
+                    toast.error("Error al eliminar la imagen del producto.");
+                }
+            } else {
+                const data = await res.json();
+                toast.error("Hubo un fallo al eliminar el producto.");
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.error("Error deleting product and image:", error);
+            toast.error("Error al eliminar el producto y la imagen.");
+        }
+    };
+
+    const handleProductDeleteModal = async (id: string, imageUrl: string | undefined) => {
         Swal.fire({
             title: 'Esta seguro que quiere eliminar el producto?',
             text: "Una vez borrado, no se podra recuperar!",
@@ -158,7 +176,7 @@ const AdminHome = () => {
             confirmButtonText: 'Eliminiar'
         }).then((result) => {
             if (result.isConfirmed) {
-                handleProductDelete(id);
+                handleProductDelete(id, imageUrl);
             }
         })
     }
@@ -170,9 +188,9 @@ const AdminHome = () => {
             <div className="flex justify-end">
                 <button className="bg-blue-800 text-white p-2 rounded-md w-30 inline-flex items-center justify-center m-3 mx-6" onClick={handleAddProductRedirect} title='Hacer Producto Invisible'>
                     <h1>Agregar Producto</h1>
-                    <MdOutlineAddCircle className="ml-1" style={{ fontSize: '24px' }}/> {/* Adjust margin as needed */}
+                    <MdOutlineAddCircle className="ml-1" style={{ fontSize: '24px' }} /> {/* Adjust margin as needed */}
                 </button>
-            </div>  
+            </div>
             <div className="flex flex-row flex-wrap justify-around ">
                 {/* SINGLE ITEM */}
                 {featuredProducts.map((item) => (
@@ -239,13 +257,12 @@ const AdminHome = () => {
                             )}
 
 
-                            <button className="bg-blue-600 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto'  onClick={() => handleEditProductRedirect(item.id)}>
+                            <button className="bg-blue-600 text-white p-2 rounded-md mr-2 w-9" title='Editar Producto' onClick={() => handleEditProductRedirect(item.id)}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </button>
-                            <button className="bg-red-600 text-white p-2 rounded-md w-9" title='Eliminar Producto' onClick={() => handleProductDeleteModal(item.id)}>
+                            <button className="bg-red-600 text-white p-2 rounded-md w-9" title='Eliminar Producto' onClick={() => handleProductDeleteModal(item.id, item.img)}>
                                 <FontAwesomeIcon icon={faTrash} />
                             </button>
-
                         </div>
                     </div>
                 ))}

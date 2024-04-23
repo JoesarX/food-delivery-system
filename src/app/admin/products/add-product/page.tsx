@@ -6,9 +6,11 @@ import { useRouter } from "next/navigation";
 import test from "node:test";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import type { PutBlobResult } from '@vercel/blob';
+import imageCompression from 'browser-image-compression';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faPlus
+    faImage
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -48,7 +50,9 @@ const AddProductPage = () => {
     const categories = ['Comida', 'Bebida', 'Otros'];
 
     const [options, setOptions] = useState<Option[]>([]);
-    const [file, setFile] = useState<File>();
+    const [file, setFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [blob, setBlob] = useState<PutBlobResult | null>(null);
 
     const router = useRouter();
 
@@ -112,6 +116,10 @@ const AddProductPage = () => {
 
     //*Validation
     const validate = () => {
+        if (file === null) {
+            toast.error("Se requiere una Imagen.");
+            return false;
+        }
         console.log(inputs);
         if (inputs.title === "") {
             toast.error("Se requiere un Titulo.");
@@ -158,38 +166,54 @@ const AddProductPage = () => {
     };
 
     //*Image Functions
-    const handleChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const target = e.target as HTMLInputElement;
-        const item = (target.files as FileList)[0];
-        setFile(item);
+    const handleChangeImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+    
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+    
+            if (allowedImageTypes.includes(file.type)) {
+                if (file.size > maxSizeInBytes) {
+                    try {
+                        const compressedFile = await imageCompression(file, {
+                            maxSizeMB: 4.9, // Compress to slightly less than 5MB
+                            maxWidthOrHeight: 1920, // Set a maximum width and height for the compressed image
+                        });
+                        setFile(compressedFile);
+                        setImagePreview(URL.createObjectURL(compressedFile));
+                    } catch (error) {
+                        console.error('Error compressing image:', error);
+                        toast.error('Error compressing image. Please try again.');
+                    }
+                } else {
+                    setFile(file);
+                    setImagePreview(URL.createObjectURL(file));
+                }
+            } else {
+                toast.error('Please select a valid image file (JPEG, PNG, or GIF).');
+                e.target.value = ''; // Clear the file input
+            }
+        }
     };
 
-    const upload = async () => {
-        console.log("uploading image");
-        console.log(file);
-        const data = new FormData();
-        data.append("file", file!);
-        data.append("upload_preset", "restaurant");
-
-        const res = await fetch("https://api.cloudinary.com/v1_1/josuke/image/upload", {
-            method: "POST",
-            headers: { "Content-Type": "multipart/form-data" },
-            body: data,
-        });
-
-        const resData = await res.json();
-        console.log(resData);
-        return resData.url;
-    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validate()) return;
         try {
+            let imageUrl = '/temporary/p2.png';
 
-            //const url = await upload();
+            if (file) {
+                const response = await fetch(`/api/images?filename=${file.name}`, {
+                    method: 'POST',
+                    body: file,
+                });
+                const newBlob = (await response.json()) as PutBlobResult;
+                setBlob(newBlob);
+                imageUrl = newBlob.url;
+            }
 
-            //change the price in case of empty and having options just so its not 0
             if (options.length > 0) {
                 if (inputs.price === 0 || inputs.price < 0 || inputs.price === null || inputs.price === undefined || inputs.price.toString() === '') {
                     inputs.price = 99;
@@ -199,7 +223,7 @@ const AddProductPage = () => {
             const res = await fetch(`${apiUrl}/products/admin`, {
                 method: "POST",
                 body: JSON.stringify({
-                    img: '/temporary/p2.png',
+                    img: imageUrl,
                     ...inputs,
                     options,
                 }),
@@ -224,21 +248,34 @@ const AddProductPage = () => {
                 <h1 className="text-4xl mb-2 text-indigo-900 font-bold">
                     Agregar Nuevo Producto
                 </h1>
-                {/* <div className="w-full flex flex-col gap-2 ">
+                <div className="w-full flex gap-2 items-center">
                     <label
-                        className="text-sm cursor-pointer flex gap-4 items-center"
                         htmlFor="file"
+                        className="bg-blue-800 p-4 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
                     >
-                        <Image src="/upload.png" alt="" width={30} height={20} />
-                        <span>Upload Image</span>
-                    </label>su
+                        <FontAwesomeIcon icon={faImage} className=" inline-block mr-2" />
+                        Subir Imagen
+                    </label>
                     <input
                         type="file"
-                        onChange={handleChangeImg}
                         id="file"
+                        onChange={handleChangeImg}
                         className="hidden"
                     />
-                </div> */}
+                    {file && (
+                        <div className="flex items-center bg-slate-100 pr-3 rounded-md">
+                            {imagePreview && (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    style={{ maxWidth: '50px', maxHeight: '50px', marginRight: '8px', borderRadius: '8px'}}
+                                />
+                            )}
+                            <span>{file.name}</span>
+                        </div>
+                    )}
+                </div>
                 <div className="w-full flex flex-col gap-2 ">
                     <label className="text-base">Titulo</label>
                     <input
@@ -340,10 +377,10 @@ const AddProductPage = () => {
                         ))}
                     </div>
                 </div>
-                <div className="flex justify-center items-center w-full">
+                <div className="flex justify-center items-center w-full pb-8">
                     <button
                         type="submit"
-                        className="bg-blue-800 p-4 text-white rounded-md w-48 text-lg font-bold"
+                        className="bg-blue-800 p-4 hover:bg-blue-700 text-white rounded-md w-48 text-lg font-bold"
                     >
                         Crear Producto
                     </button>

@@ -76,14 +76,14 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 let featured = productData.isFeatured;
 
                 if (productData.isVisible) {
-                    visible= true;
+                    visible = true;
                 } else {
-                    visible= false;
+                    visible = false;
                 }
                 if (productData.isFeatured) {
-                    featured= true;
+                    featured = true;
                 } else {
-                    featured= false;
+                    featured = false;
                 }
 
                 // Populate the inputs state with product details
@@ -99,7 +99,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 // console.log(inputs);
 
                 setSelectedCategory(productData.catSlug)
-                setImg(productData.img? productData.img : '');
+                setImg(productData.img ? productData.img : '');
 
                 // Populate the options state with product options
                 setOptions(productData.options || []);
@@ -220,30 +220,7 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
     };
 
     //*Image Functions
-    const handleChangeImg = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const target = e.target as HTMLInputElement;
-        const item = (target.files as FileList)[0];
-        setFile(item);
-    };
-
-    const upload = async () => {
-        console.log("uploading image");
-        console.log(file);
-        const data = new FormData();
-        data.append("file", file!);
-        data.append("upload_preset", "restaurant");
-
-        const res = await fetch("https://api.cloudinary.com/v1_1/josuke/image/upload", {
-            method: "POST",
-            headers: { "Content-Type": "multipart/form-data" },
-            body: data,
-        });
-
-        const resData = await res.json();
-        console.log(resData);
-        return resData.url;
-    };
-
+    
     const handleSubmitEdit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validate()) return;
@@ -288,21 +265,6 @@ const EditProductPage = ({ params }: { params: { id: string } }) => {
                 <h1 className="text-4xl mb-2 text-indigo-900 font-bold">
                     Editar Producto
                 </h1>
-                {/* <div className="w-full flex flex-col gap-2 ">
-                    <label
-                        className="text-sm cursor-pointer flex gap-4 items-center"
-                        htmlFor="file"
-                    >
-                        <Image src="/upload.png" alt="" width={30} height={20} />
-                        <span>Upload Image</span>
-                    </label>su
-                    <input
-                        type="file"
-                        onChange={handleChangeImg}
-                        id="file"
-                        className="hidden"
-                    />
-                </div> */}
                 <div className="w-full flex flex-col gap-2 ">
                     <label className="text-base">Titulo</label>
                     <input
