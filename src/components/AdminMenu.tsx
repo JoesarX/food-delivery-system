@@ -19,12 +19,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const links = [
-    { id: 1, title: "Resgistradora", url: "/admin/register", icon: faCashRegister, enabled: false },
-    { id: 2, title: "Ordenes", url: "/admin/orders", icon: faClipboardList , enabled: false },
+    //{ id: 1, title: "Resgistradora", url: "/admin/register", icon: faCashRegister, enabled: false },
+    //{ id: 2, title: "Ordenes", url: "/admin/orders", icon: faClipboardList , enabled: false },
     { id: 3, title: "Productos", url: "/admin/products", icon: faUtensils, enabled: true  },
-    { id: 4, title: "Usuarios", url: "/admin/users", icon: faUsers, enabled: false  },
+    //{ id: 4, title: "Usuarios", url: "/admin/users", icon: faUsers, enabled: false  },
     { id: 5, title: "Comentarios", url: "/admin/feedback", icon: faComments, enabled: true  },
-    { id: 6, title: "Finanzas", url: "/admin/finance", icon: faCoins, enabled: false  },
+    //{ id: 6, title: "Finanzas", url: "/admin/finance", icon: faCoins, enabled: false  },
 ];
 
 const AdminMenu = () => {
